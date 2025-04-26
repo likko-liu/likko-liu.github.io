@@ -187,7 +187,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:17:39" itemprop="dateModified" datetime="2025-04-26T23:17:39+08:00">2025-04-26</time>
+                <time title="修改时间：2025-04-26 23:22:42" itemprop="dateModified" datetime="2025-04-26T23:22:42+08:00">2025-04-26</time>
               </span>
 
           
@@ -222,17 +222,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>我是这样理解的。</p>
+          <span id="more"></span>
+<p>我是这样理解的。</p>
 <p>假如我们现在有2个任务以及6个中断，其中，中断4、5、6运行的时候将会调用 <code>safe freertos api</code>。   </p>
 <p>就像图中的（1）一样。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/11/25/LIBRARY-MAX-SYSCALL-INTERRUPT-PRIORITY/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202411/3191003-20241125110055609-285585429.png"></p>
+<p>那么现在假如我们正在执行任务1或任务2，此时中断5触发，在回调中会执行它需要做的，包含调用 <code>safe freertos api</code>，并在执行过程中会进入临界段屏蔽所有低于它优先级的中断和任务（现在先不考虑 FreeRTOS 中的 <code>MAX_SYSCALL_INTERRPUT_PRIORITY</code> 机制，也就是它不会屏蔽中断1~4）。</p>
+<p>就像图中的（2）一样。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202411/3191003-20241125110101484-1126363307.png"></p>
+<p>继续前进，当中断5调用 <code>safe freertos api</code>，并在执行过程中时，这个时候中断4触发，它将会抢占中断5执行，进一步也将调用 <code>safe freertos api</code>，这个时候我猜测中断5涉及freertos内核的操作（因为抢占，仅执行了一半）将会失去保护，造成严重的不可逆的影响（可能有上下文调度、任务管理的问题）。</p>
+<p>就像图中的（3）一样。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202411/3191003-20241125110106511-395894787.png"></p>
+<p>那么现在让我们回到一开始的地方，如果有FreeRTOS 中的 <code>MAX_SYSCALL_INTERRPUT_PRIORITY</code> 机制存在，在中断5执行过程中，会屏蔽低于 <code>MAX_SYSCALL_INTERRPUT_PRIORITY</code> 的所有中断，也就不会发生我前面说过的中断4抢占执行造成的事故。</p>
+<p>就像图中的（4）一样。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202411/3191003-20241125110109898-1875759687.png"></p>
+<p>那么，你肯定会问，中断1~3呢，它们会被屏蔽吗？答案是：不会。那么它们调用 <code>safe freertos api</code> 不会发生上面说的事故吗？这个就是我最近遇到的问题，现在也知道了答案。有FreeRTOS 中的 <code>MAX_SYSCALL_INTERRPUT_PRIORITY</code> 机制存在，高于 <code>MAX_SYSCALL_INTERRPUT_PRIORITY</code> 的中断将会不允许你调用 <code>safe freertos api</code>（如果你调用，会因为<code>Freertos断言</code> 存在导致代码不会通过编译），也就不会发生事故。</p>
+<p>这是我个人的理解。如果发现错误，请留言回复。</p>
+
       
     </div>
 
@@ -282,7 +288,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:17:58" itemprop="dateModified" datetime="2025-04-26T23:17:58+08:00">2025-04-26</time>
+                <time title="修改时间：2025-04-26 23:22:26" itemprop="dateModified" datetime="2025-04-26T23:22:26+08:00">2025-04-26</time>
               </span>
 
           
@@ -317,16 +323,40 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在之前学习 rust 时，使用过一段时间 rustlings 感觉还不错，但是之前的学习只把 rustlings 的题目刷了一半，然后想再从头到尾刷一遍 rustlings 的题目。  </p>
+          <span id="more"></span>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在之前学习 rust 时，使用过一段时间 rustlings 感觉还不错，但是之前的学习只把 rustlings 的题目刷了一半，然后想再从头到尾刷一遍 rustlings 的题目。  </p>
 <p>在 rustlings 的 README.md 文档中也没有找到重置 rustlings 的方法，而且官方的分支也更新到了 v6.2.0（我之前使用的似乎是 v5.x 版本的）。索性直接把整个文件夹删掉，再重新搞一遍，顺便也可以试试 v6.2.0 有啥不一样，一石二鸟。   </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/08/24/rustlings%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8A%A5%E9%94%99/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<p>然后，按之前的记忆安装 rustlings（就是没细看现在的 README.md 文档，因为之前的安装记忆犹新…）。然后就是一半是按记忆里的，一半是那个 README.md 文档里的，具体就是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: git <span class="built_in">clone</span> https://github.com/rust-lang/rustlings.git</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: <span class="built_in">cd</span> rustlings/</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: cargo install rustlings</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: rustlings init</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，就报错了…</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">:~/rust/rustlings$ rustlings</span></span><br><span class="line">Error: You are trying to run Rustlings using the old method before version 6.</span><br><span class="line">The new method doesn&#x27;t include cloning the Rustlings&#x27; repository.</span><br><span class="line">Please follow the instructions in `README.md`:</span><br><span class="line">https://github.com/rust-lang/rustlings#getting-started</span><br></pre></td></tr></table></figure>
+
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>按终端的提示信息应该是一个旧版本的 rustlings 和一个 version 6 版本的 rustlings 有冲突，初步感觉是之前的 rustlings 没卸载干净。</p>
+<p>那好，就再按规范再卸载一次 <code>cargo uninstall rustlings</code>，保险起见还在目录里敲了个 <code>cargo clean</code>。</p>
+<p>然后，我再</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: git <span class="built_in">clone</span> https://github.com/rust-lang/rustlings.git</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: <span class="built_in">cd</span> rustlings/</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: cargo install rustlings</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: rustlings init</span></span><br></pre></td></tr></table></figure>
+
+<p>然后，就又报错了…</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">:~/rust/rustlings$ rustlings</span></span><br><span class="line">Error: You are trying to run Rustlings using the old method before version 6.</span><br><span class="line">The new method doesn&#x27;t include cloning the Rustlings&#x27; repository.</span><br><span class="line">Please follow the instructions in `README.md`:</span><br><span class="line">https://github.com/rust-lang/rustlings#getting-started</span><br></pre></td></tr></table></figure>
+
+<h2 id="进一步分析"><a href="#进一步分析" class="headerlink" title="进一步分析"></a>进一步分析</h2><p>明显感觉到不对劲，然后我直接在 vscode 里把源码的文件夹打开，看看这个 error 是什么条件产生的，在 <code>rustlings/src/main.rs</code> 里</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> OLD_METHOD_ERR: &amp;<span class="type">str</span> =</span><br><span class="line">    <span class="string">&quot;You are trying to run Rustlings using the old method before version 6.</span></span><br><span class="line"><span class="string">The new method doesn&#x27;t include cloning the Rustlings&#x27; repository.</span></span><br><span class="line"><span class="string">Please follow the instructions in `README.md`:</span></span><br><span class="line"><span class="string">https://github.com/rust-lang/rustlings#getting-started&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>就是这段话，一模一样，然后查找 <code>OLD_METHOD_ERR</code> 在哪里有调用，还是在这个文件里</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">cfg!</span>(<span class="title function_ invoke__">not</span>(debug_assertions)) &amp;&amp; Path::<span class="title function_ invoke__">new</span>(<span class="string">&quot;dev/rustlings-repo.txt&quot;</span>).<span class="title function_ invoke__">exists</span>() &#123;</span><br><span class="line">    bail!(<span class="string">&quot;&#123;OLD_METHOD_ERR&#125;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一个条件检查代码是否在发布模式下运行，如果代码在发布模式下编译（即没有调试断言）<code>cfg!(not(debug_assertions))</code> 返回 <code>true</code>，这个条件没问题，我就是在发布模式下运行的。</p>
+<p>那么问题就在第二个条件里了，第二个条件检查 <code>dev/rustlings-repo.txt</code> 是否存在。去到那个目录下，果然存在这个文件，文件内容是</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">This file is used to check if the user tries to run Rustlings in the repository (the method before version 6)</span><br></pre></td></tr></table></figure>
+
+<p>好家伙，看了这段话才恍然大悟，<code>version 6</code> 和 <code>version 5</code> rustlings 的安装使用方法变更了，然后又重新看了 README.md 文档。</p>
+<p>果然，人家现在不需要再像之前 <code>version 5</code> 的时候，必须先把 rustlings 的库 clone 到本地，然后再安装初始化使用。只需要直接在终端敲 <code>cargo install rustlings</code> 然后正常的初始化就可以使用了，省了之前的 <em>库 clone 到本地</em> 那一步。</p>
+<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: cargo install rustlings</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: <span class="built_in">cd</span> rustlings/</span></span><br><span class="line"><span class="meta prompt_">$</span><span class="language-bash">: rustlings init</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这 rustlings 版本更新后，也不在 README.md 文档明说一下<code>version 6</code> 和 <code>version 5</code> rustlings 的安装使用方法变更了，坑坑坑。</p>
+<p>好吧，好像根本原因在我没细看人家的文档…</p>
+
       
     </div>
 
@@ -376,7 +406,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:17:49" itemprop="dateModified" datetime="2025-04-26T23:17:49+08:00">2025-04-26</time>
+                <time title="修改时间：2025-04-26 23:22:31" itemprop="dateModified" datetime="2025-04-26T23:22:31+08:00">2025-04-26</time>
               </span>
 
           
@@ -411,17 +441,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><ul>
+          <span id="more"></span>
+<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><ul>
 <li>将 <code>env_logger</code> <code>log</code> 添加到 Cargo.toml ：<br>打开 Cargo.toml 文件并在 [dependencies] 部分下添加 <code>env_logger</code> <code>log</code> 。</li>
 </ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[package]</span><br><span class="line">name = <span class="string">&quot;helloworld&quot;</span></span><br><span class="line">version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">edition = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line">[dependencies]</span><br><span class="line">log = <span class="string">&quot;0.4&quot;</span></span><br><span class="line">env_logger = <span class="string">&quot;0.10&quot;</span></span><br></pre></td></tr></table></figure></blockquote>
+<ul>
+<li><p>导入 <code>env_logger</code> <code>log</code> crate：<br>确保将 <code>env_logger</code> <code>log</code> crate导入到 main.rs 或 lib.rs 文件中。</p>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> env_logger;</span><br><span class="line"><span class="keyword">use</span> log::debug;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>如果终端没有输出，可能是日志级别配置的问题。默认情况下， <code>env_logger</code> 可能不显示调试级别日志。需要设置适当的环境变量来配置日志级别。<br>在 Linux 和 macOS 上：</p>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export RUST_LOG=debug</span><br></pre></td></tr></table></figure><p>在 Windows 上（命令提示符）：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set RUST_LOG=debug</span><br></pre></td></tr></table></figure><p>在 Windows 上（PowerShell）：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$env:RUST_LOG=<span class="string">&quot;debug&quot;</span></span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<h2 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[package]</span><br><span class="line">name = <span class="string">&quot;helloworld&quot;</span></span><br><span class="line">version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">edition = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line">[dependencies]</span><br><span class="line">rand = <span class="string">&quot;0.8.5&quot;</span></span><br><span class="line">log = <span class="string">&quot;0.4&quot;</span></span><br><span class="line">env_logger = <span class="string">&quot;0.10&quot;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[warn(unused_imports)]</span></span><br><span class="line"><span class="keyword">use</span> log::&#123;debug, error, log_enabled, info, Level&#125;;</span><br><span class="line"><span class="keyword">use</span> env_logger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">process_serial_data</span>(n: <span class="type">usize</span>, serial_buf: &amp;[<span class="type">u8</span>]) &#123;</span><br><span class="line">    <span class="comment">// Log the number of bytes received and the data in hexadecimal format</span></span><br><span class="line">    debug!(<span class="string">&quot;rx: &#123;&#125;, &#123;:02X?&#125;&quot;</span>, n, &amp;serial_buf[..n]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Other processing logic...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// Initialize the logger</span></span><br><span class="line">    env_logger::<span class="title function_ invoke__">init</span>();</span><br><span class="line"></span><br><span class="line">    debug!(<span class="string">&quot;this is a debug &#123;&#125;&quot;</span>, <span class="string">&quot;message&quot;</span>);</span><br><span class="line">    <span class="comment">// error!(&quot;this is printed by default&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Example data</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">n</span> = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">serial_buf</span> = <span class="built_in">vec!</span>[<span class="number">0xDE</span>, <span class="number">0xAD</span>, <span class="number">0xBE</span>, <span class="number">0xEF</span>, <span class="number">0x00</span>, <span class="number">0x01</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process the data</span></span><br><span class="line">    <span class="title function_ invoke__">process_serial_data</span>(n, &amp;serial_buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s</span><br><span class="line"> Running `target/debug/helloworld`</span><br><span class="line">[2024-06-26T01:29:31Z DEBUG helloworld] this is a debug message</span><br><span class="line">[2024-06-26T01:29:31Z DEBUG helloworld] rx: 4, [DE, AD, BE, EF]</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -471,7 +513,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:07:39" itemprop="dateModified" datetime="2025-04-26T23:07:39+08:00">2025-04-26</time>
+                <time title="修改时间：2025-04-26 23:22:17" itemprop="dateModified" datetime="2025-04-26T23:22:17+08:00">2025-04-26</time>
               </span>
 
           
@@ -506,15 +548,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。<br>但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。<br>目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，我乘凉。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/25/WSL2%E8%BF%9E%E6%8E%A5Windows%E7%9A%84USB%E8%AE%BE%E5%A4%87/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+          <span id="more"></span>
+<h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。<br>但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。<br>目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，我乘凉。</p>
+<h2 id="1-安装-package"><a href="#1-安装-package" class="headerlink" title="1. 安装 package"></a>1. 安装 package</h2><p>两个安装方法，自选，我选的是第二个。</p>
+<ul>
+<li>github 获取，安装 <a target="_blank" rel="noopener" href="https://github.com/dorssel/usbipd-win/releases">usbipd-win</a> 项目。     </li>
+<li>也可使用 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/package-manager/winget/">Windows 程序包管理器程序 (winget)</a> 来安装 usbipd-win 项目。 如果已安装 winget，只需使用命令 <code>winget install --interactive --exact dorssel.usbipd-win</code> 安装 usbipd-win 即可。 如果省略了 <code>--interactive</code>，winget 可能会立即重启计算机（如果这是安装驱动程序所必需的操作）。<ul>
+<li>这将安装：</li>
+<li>名为 usbipd 的服务（显示名称：USBIP 设备主机）。 可使用 Windows 中的“服  务”应用检查此服务的状态。</li>
+<li>命令行工具 usbipd。 此工具的位置将添加到 PATH 环境变量。</li>
+<li>名为 usbipd 的防火墙规则，用于允许所有本地子网连接到服务。 可修改此防火墙规则以微调访问控制。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-附加-USB-设备"><a href="#2-附加-USB-设备" class="headerlink" title="2. 附加 USB 设备"></a>2. 附加 USB 设备</h2><ol>
+<li><p>以 <em>管理员模式</em> 打开 PowerShell 和 WSL2 （也就是 Windows 和 WSL2 的终端）。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png" alt="alt text"></p>
+</li>
+<li><p>在 PowerShell 里输入 <code>usbipd list</code> 把接到 windows 上的 USB 设备列出来，方便看 USB-id（后面命令需要用到）。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025318_image.png" alt="alt text"></p>
+</li>
+<li><p>在附加 USB 设备之前，必须使用命令 <code>usbipd bind</code> 先共享设备（必须要做），从而允许它附加到 WSL2。运行命令后，再次使用命令 usbipd list 验证设备是否已共享。（后面的设备状态变成 <em>Shared</em>）<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025628_image.png" alt="alt text"></p>
+</li>
+<li><p>然后就可以附加 USB 设备了（注意，只要 USB 设备连接到 WSL，Windows 将无法使用它）。使用命令 <code>usbipd attach --wsl -b 2-1</code> 附加 USB 设备，附加到 WSL2 后，WSL2 运行的分发版本（也就是你 WSL 安装的 linux 系统，我的是 Ubuntu ）可以使用 USB 设备。 使用 <code>usbipd list</code> 验证设备是否已附加。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425030011_image.png" alt="alt text"></p>
+</li>
+<li><p>在 WSL 中检查下是否正常附加上 USB 设备，使用 <code>lsusb</code> 命令列出附加的 USB 设备。运行一个使用到 USB 串口的 RUST 程序，可以正常运行说明可以了。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_ea87f342.png" alt="alt text"><br>应该可以看到刚刚附加的设备，并且能够使用常规 Linux 工具与之交互。根据你的应用程序，可能还需要配置 udev 规则以允许非根用户访问设备。</p>
+</li>
+<li><p>WSL 中完成设备使用后，在 PowerShell（Windows） 里 <code>usbipd detach --busid &lt;busid&gt;</code> 物理断开 USB 设备，才能在 Windows 里使用这个 USB 设备（这个是微软推荐的做法）。或者粗暴点，直接把设备拔了，重新插一下，效果也一样。但是不知道有没有啥负面影响（目前还没发现）。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/connect-usb">微软 WSL 使用说明</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.listera.top/wsl2-zhi-chi-usb-chuan-kou/">wsl2 支持 usb 串口</a></li>
+</ul>
+
       
     </div>
 
@@ -564,7 +629,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:06:53" itemprop="dateModified" datetime="2025-04-26T23:06:53+08:00">2025-04-26</time>
+                <time title="修改时间：2025-04-26 23:22:35" itemprop="dateModified" datetime="2025-04-26T23:22:35+08:00">2025-04-26</time>
               </span>
 
           
@@ -599,16 +664,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。</p>
+          <span id="more"></span>
+<h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。</p>
 <h2 id="1-Cmocka介绍"><a href="#1-Cmocka介绍" class="headerlink" title="1. Cmocka介绍"></a>1. Cmocka介绍</h2><p><a target="_blank" rel="noopener" href="https://cmocka.org/">Cmocka</a> 是一个 C 单元测试框架，支持 <strong>mock objects</strong>（打桩）。它只需要标准的 C 库，可以在一系列计算平台（包括 embedded ）和不同的编译器上运行。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/11/Cmocka%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<p>Cmocka 库提供：</p>
+<ul>
+<li>Running Tests 是整个测试的运行函数</li>
+<li>Standard Assertions 对标准assert的一种替换方案，防止测试被assert打断</li>
+<li>Checking Parameters 用于对函数参数的检测</li>
+<li>Mock Objects 用于mock对象，常用作mock函数的返回，实现方式与Checking Parameter类似</li>
+<li>Dynamic Memory Allocation 用于对内存的检测</li>
+<li>Assert Macros 包含了常用的断言</li>
+</ul>
+<h2 id="2-GNU工具链安装"><a href="#2-GNU工具链安装" class="headerlink" title="2. GNU工具链安装"></a>2. GNU工具链安装</h2><blockquote>
+<p>MSYS2（Minimal SYStem 2）是一个集成了大量的GNU工具链、工具和库的开源软件包集合。它提供了一个类似于Linux的shell环境，可以在Windows系统中编译和运行许多Linux应用程序和工具。    </p>
+<p>MSYS2基于MinGW-w64平台，提供了一个完整的开发环境，包括GCC编译器、GDB调试器、Make、Git版本控制系统和许多其他开发工具。除了常用的开发库和工具之外，MSYS2还提供了许多专门针对Windows平台的库和工具，方便开发人员进行跨平台开发和移植工作。    </p>
+<p>由于MSYS2拥有比较完整的Linux工具链和库，因此它成为了许多跨平台开发和移植项目的首选工具。另外，使用MSYS2也可以轻松地在Windows系统中搭建一个类似于Linux的软件开发环境，方便开发人员进行开发和调试工作。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/B11050729/article/details/131719012">安装 MSYS2</a> 并安装后续编译所需的  <a target="_blank" rel="noopener" href="https://packages.msys2.org/package/mingw-w64-x86_64-gcc?repo=mingw64">GCC工具链</a> （我们希望后续使用 Mingw64 的子环境，故安装该子环境对应的 GCC 工具链），该工具链包含了 gcc编译器 、 gdb调试器 、 make 、git 等一系列所需的开发工具。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_4d081329.png"></p>
+<h2 id="3-Cmocka源码下载编译安装-直接安装"><a href="#3-Cmocka源码下载编译安装-直接安装" class="headerlink" title="3. Cmocka源码下载编译安装 &#x2F; 直接安装"></a>3. Cmocka源码下载编译安装 &#x2F; 直接安装</h2><p>源码下载编译 或 直接安装 都可配置 Cmocka，但目前在配置使用过程中，Windows 系统使用源码下载编译方法在单元测试过程中会存在找不到 Cmocka 库的问题，还得配置寻找 Cmocka 库。<br>故推荐在 Windows 系统下，使用直接安装的方法；在 Linux 环境下，源码下载编译 或 直接安装 均可。</p>
+<h3 id="3-1-Cmocka源码下载编译"><a href="#3-1-Cmocka源码下载编译" class="headerlink" title="3.1. Cmocka源码下载编译"></a>3.1. Cmocka源码下载编译</h3><p>访问 Cmocka 官方网站 <a target="_blank" rel="noopener" href="https://cmocka.org/">https://cmocka.org/</a> 下载源码。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412023607_image.png" alt="alt text"> </p>
+<p>在 Linux 环境下，终端输入以下指令，对 Cmocka 源码进行解压、编译、安装。<em>具体参考：<a target="_blank" rel="noopener" href="https://qianchenzhumeng.github.io/posts/cmocka_tutorial/#2-%E5%AE%89%E8%A3%85-cmocka">https://qianchenzhumeng.github.io/posts/cmocka_tutorial&#x2F;</a></em></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tar -xvJf cmocka-1.1.3.tar.xz</span><br><span class="line"><span class="built_in">cd</span> cmocka-1.1.3</span><br><span class="line"><span class="built_in">mkdir</span> build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ..</span><br><span class="line">make</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+
+<p>在 Windows 环境下，终端输入以下指令，对 Cmocka 源码进行解压、编译、安装、并更新系统 <code>Path</code>（请注意默认的 CMocka 安装位置为：C:&#x2F;Program Files (x86)&#x2F; ）。<em>具体参考：<a target="_blank" rel="noopener" href="https://sam.hooke.me/note/2022/04/setting-up-cmocka/">https://sam.hooke.me/note/2022/04/setting-up-cmocka/</a></em></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> cmocka</span><br><span class="line">cmake -S . -B build -G <span class="string">&quot;MinGW Makefiles&quot;</span> -DCMAKE_BUILD_TYPE=Debug</span><br><span class="line">cmake --build build</span><br><span class="line">cmake --install build</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-Cmocka直接安装"><a href="#3-2-Cmocka直接安装" class="headerlink" title="3.2. Cmocka直接安装"></a>3.2. Cmocka直接安装</h3><p>MSYS2 官网直接提供了 Cmocka 安装包 <a target="_blank" rel="noopener" href="https://packages.msys2.org/base/mingw-w64-cmocka">https://packages.msys2.org/base/mingw-w64-cmocka</a>，根据我们选择的开发子系统 Mingw64 选择对应的安装包，在 Ming64 终端直接输入 <code>pacman -S mingw-w64-x86_64-cmocka</code> 即可完成安装。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412024129_image.png" alt="alt text"></p>
+<p>安装成功后，即可发现在 Mingw64 的 include 路径下已经包含了 Cmocka 的库文件。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412024856_image.png" alt="alt text"></p>
+<h2 id="4-Cmocka使用"><a href="#4-Cmocka使用" class="headerlink" title="4. Cmocka使用"></a>4. Cmocka使用</h2><p>先对 Cmocka 进行一个简单的测试使用，Cmocka 官方提供的源码中 <code>./example/</code> 路径下提供了几个测试用例。我选择了 <code>calculator</code> 进行测试使用。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">└── cmocka-1.1.3     </span><br><span class="line">    ├── AUTHORS     </span><br><span class="line">    ├── build   </span><br><span class="line">    ├── ChangeLog  </span><br><span class="line">    ├── cmake   </span><br><span class="line">    ├── CMakeLists.txt  </span><br><span class="line">    ├── cmocka.pc.cmake  </span><br><span class="line">    ├── cmocka-build-tree-settings.cmake.in  </span><br><span class="line">    ├── cmocka-config.cmake.in  </span><br><span class="line">    ├── CompilerChecks.cmake  </span><br><span class="line">    ├── config.h.cmake  </span><br><span class="line">    ├── ConfigureChecks.cmake  </span><br><span class="line">    ├── COPYING  </span><br><span class="line">    ├── coverity  </span><br><span class="line">    ├── CPackConfig.cmake  </span><br><span class="line">    ├── CTestConfig.cmake  </span><br><span class="line">    ├── DefineOptions.cmake  </span><br><span class="line">    ├── doc    </span><br><span class="line">    ├── example    </span><br><span class="line">    │   ├── allocate_module.c  </span><br><span class="line">    │   ├── allocate_module_test.c  </span><br><span class="line">    │   ├── assert_macro.c    </span><br><span class="line">    │   ├── assert_macro.h  </span><br><span class="line">    │   ├── assert_macro_test.c  </span><br><span class="line">    │   ├── assert_module.c  </span><br><span class="line">    │   ├── assert_module.h  </span><br><span class="line">    │   ├── assert_module_test.c  </span><br><span class="line">    │   ├── build    </span><br><span class="line">    │   ├── calculator.c  </span><br><span class="line">    │   ├── calculator.h  </span><br><span class="line">    │   ├── calculator_test.c  </span><br><span class="line">    │   ├── CMakeLists.txt  </span><br><span class="line">    │   ├── database.h  </span><br><span class="line">    │   ├── mock  </span><br><span class="line">    │   └── simple_test.c  </span><br><span class="line">    ├── include  </span><br><span class="line">    ├── INSTALL.md  </span><br><span class="line">    ├── NEWS  </span><br><span class="line">    ├── README.md  </span><br><span class="line">    ├── src  </span><br><span class="line">    └── tests  </span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>cd example</code> 命令进入目录，修改部分 <code>calculator.c</code> 文件代码内容，使其支持进行单元测试后，执行 <code>gcc -o calculator calculator_test.c -lcmocka</code> 链接 cmocka 库进行编译，编译后生成 <code>calculator.exe</code> 文件，运行。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412032458_image.png" alt="alt text"></p>
+<p>最终运行结果为：进行了 22 条测试，通过 15 条测试，未通过 7 条测试。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412032837_image.png" alt="alt text"></p>
+<h2 id="5-代码覆盖率"><a href="#5-代码覆盖率" class="headerlink" title="5. 代码覆盖率"></a>5. 代码覆盖率</h2><p>使用 <code>gcov</code> 和 <code>lcov</code> 查看代码覆盖率。<br>在 <code>./example/</code> 路径下创建 <code>code_coverage</code> 文件夹，<code>cd code_coverage</code> 进入该目录。 </p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">gcc -coverage -O0 -o calculator_test ../calculator_test.c -lcmocka</span><br><span class="line">gcov ../calculator_test.c -o .</span><br><span class="line"><span class="comment"># 使用 lcov 收集当前目录下的覆盖率数据，将结果储存在 calculator_test.info 中</span></span><br><span class="line">lcov -d . -t calculator -o calculator_test.info -b . -c</span><br><span class="line"><span class="comment"># 为 test_mocking.info 中的覆盖率数据生成 html 文档</span></span><br><span class="line">genhtml -o output calculator.info</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><em>参考 <a target="_blank" rel="noopener" href="https://qianchenzhumeng.github.io/posts/cmocka_tutorial/#2-%E5%AE%89%E8%A3%85-cmocka">https://qianchenzhumeng.github.io/posts/cmocka_tutorial&#x2F;</a></em>    </p>
+<p><em>若提示找不到 <code>lcov</code> 命令，需先输入 <code>pacman -S lcov</code> 对该包进行安装</em>。</p>
+</blockquote>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412054239_Screenshot%202024-04-11%20173324.png" alt="alt text"><br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412054314_Screenshot%202024-04-11%20173337.png" alt="alt text">  </p>
+<p>最后，用浏览器打开 <code>./output/index.html</code> 查看代码覆盖率报告。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412053956_Screenshot%202024-04-11%20173152.png" alt="alt text"></p>
+
       
     </div>
 
@@ -658,7 +756,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:18:01" itemprop="dateModified" datetime="2025-04-26T23:18:01+08:00">2025-04-26</time>
+                <time title="修改时间：2025-04-26 23:22:20" itemprop="dateModified" datetime="2025-04-26T23:22:20+08:00">2025-04-26</time>
               </span>
 
           
@@ -693,16 +791,104 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="STM32中断刨析"><a href="#STM32中断刨析" class="headerlink" title="STM32中断刨析"></a>STM32中断刨析</h1><p>一直以来，学习了 <strong>stm32</strong> 和 <strong>freertos</strong> 但在思考 <code>RTOS</code> 的任务调度时，涉及到 stm32 的中断相关的 <code>PendSV</code> 就感觉糊里糊涂。本篇记录刨析 stm32 的中断系统。 </p>
+          <span id="more"></span>
+<h1 id="STM32中断刨析"><a href="#STM32中断刨析" class="headerlink" title="STM32中断刨析"></a>STM32中断刨析</h1><p>一直以来，学习了 <strong>stm32</strong> 和 <strong>freertos</strong> 但在思考 <code>RTOS</code> 的任务调度时，涉及到 stm32 的中断相关的 <code>PendSV</code> 就感觉糊里糊涂。本篇记录刨析 stm32 的中断系统。 </p>
 <p>本文的讨论重点是最后一部分内容 <code>【SVC 和 PendSV】</code>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
+<hr>
+<h2 id="【中断和异常】"><a href="#【中断和异常】" class="headerlink" title="【中断和异常】"></a>【中断和异常】</h2><p>在STM32微控制器中，<strong>中断</strong>（Interrupt）和<strong>异常</strong>（Exception）是两种处理器响应外部事件的机制。它们的区别和联系如下：  </p>
+<blockquote>
+<p>区别：  </p>
+<ul>
+<li>中断（Interrupt）：中断是<strong>外部事件（<em>例如外部IO的状态变化、定时器溢出等</em>）引起处理器正常执行流程的中断</strong>。当一个中断事件发生时，处理器会停止当前正在执行的程序，保存当前的执行环境（<em>比如寄存器状态</em>），然后转移到一个预先定义的中断服务函数（<em>Interrupt Service Routine</em>，ISR）去处理中断。处理完成后，再回到原来的执行流程。   </li>
+<li>异常（Exception）：异常是由于处理器内部的一些特定条件触发的事件，通常表示了<strong>处理器无法继续执行当前指令的情况</strong>。<br>异常可以分为两种类型：<strong>硬件异常</strong>（<em>比如除法零、非法指令等</em>）和<strong>软件异常</strong>（<em>例如系统调用、断言失败等</em>）。当异常发生时，处理器会类似中断一样，暂停当前执行流程，转移到一个特定的异常处理程序（<em>Exception Handler</em>）去处理该异常。</li>
+</ul>
+<p>联系：  </p>
+<ul>
+<li>中断和异常都是处理器对外部或内部事件的响应机制，都会导致当前执行流程被中断，然后转移到一个特定的处理程序去处理。  </li>
+<li>在STM32中，中断和异常都可以通过中断向量表（<em>Interrupt Vector Table</em>）来确定相应的 <em>处理程序入口地址</em>。   </li>
+<li>在处理中断和异常时，通常需要保存一些关键的状态信息（<em>比如寄存器状态</em>），以便在处理完后能够恢复原来的执行流程。</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="【嵌套向量中断控制器-NVIC-】"><a href="#【嵌套向量中断控制器-NVIC-】" class="headerlink" title="【嵌套向量中断控制器 NVIC 】"></a>【嵌套向量中断控制器 NVIC 】</h2><p><strong>嵌套向量中断控制器</strong>（支持中断嵌套）,简称 NVIC。NVIC 的寄存器以<strong>存储器映射</strong>（<em>将计算机系统中的物理存储器（RAM、ROM、外设寄存器等）映射到处理器的地址空间中</em>）的方式来访问,除了包含控制寄存器和中断处理的控制逻辑之外, <code>NVIC</code> 还包含了 <code>MPU</code>、 <code>SysTick 定时器</code> 以及调试控制相关的寄存器。  </p>
+<p>在中断发生时,它会自动取出对应的 <em>服务例程入口地址</em>,并且直接调用。</p>
+<p><strong>系统异常</strong>和<strong>外部中断</strong>。其中系统异常有 8 个(<em>如果把 <code>Reset</code> 和 <code>HardFault</code> 也算上的话就是 10 个</em>),外部中断有 60 个。除了个别异常的优先级被定死外,其它异常的优先级都是可编程的。  </p>
+<p><img src="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104046353-1053208385.png" alt="向量表"><br><img src="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104412215-2072086501.png" alt="向量表"></p>
+<blockquote>
+<ul>
+<li><p><code>MSP</code> 代表Main Stack Pointer（<strong>主堆栈指针</strong>）。<code>MSP</code> 是一个特殊的寄存器，用于指示主堆栈的顶部地址。主堆栈用于存储处理器<strong>执行中断服务程序时的上下文信息</strong>，比如寄存器的状态、函数调用的返回地址等。当处理器进入中断服务程序时，会自动将当前的寄存器状态保存到主堆栈中，以便在中断服务程序执行完毕后能够恢复原来的执行状态。   </p>
+</li>
+<li><p>在STM32中，<code>MSP</code> 通常由系统初始化代码在启动时初始化为主堆栈的起始地址。当中断发生时，处理器会自动将 <code>MSP</code> 保存到当前线程堆栈指针（<em>Process Stack Pointer</em> , PSP）中，并将 <code>MSP</code> 指向<em>主堆栈</em>，从而确保中断服务程序能够正确地使用主堆栈。</p>
+</li>
+<li><p><code>PSP</code> 代表Process Stack Pointer（进程堆栈指针）。 <code>PSP</code> 是一个特殊的寄存器，用于指示当前线程（或进程）的堆栈的顶部地址。每个线程都有自己的堆栈，用于保存函数调用的上下文信息、局部变量以及其他临时数据。</p>
+</li>
+</ul>
+</blockquote>
+<p>当发生了异常并且要响应它时,CM3 需要定位其服务例程的入口地址。这些入口地址存储在所谓的“(异常)向量表”中。缺省情况下,CM3 认为该表位于零地址处,且各向量占用 <code>4字节</code>。<br><strong>【补充】</strong>：根据 <code>《CM3权威手册》</code> 描述，上电后 <code>0x0000_0000</code> 为**主堆栈指针（MSP）**的初始值。</p>
+<hr>
+<h2 id="【优先级】"><a href="#【优先级】" class="headerlink" title="【优先级】"></a>【优先级】</h2><p>在 CM3 中,优先级对于异常来说很关键的,它会决定一个异常是否能被掩蔽,以及在未掩蔽的情况下何时可以响应。<strong>优先级的数值越小,则优先级越高</strong>。 </p>
+<p>原则上,CM3 支持 3 个固定的高优先级和多达 256 级的 <em>可编程优先级</em>,<strong>并且支持 128 级抢占（还需包含子优先级，后续解释）</strong>。但是,绝大多数 CM3 芯片都会精简设计,以致实际上支持的优先级数会更少,如 8 级,16 级,32 级等。<strong>它们在设计时会裁掉表达优先级的几个低端有效位,以减少优先级的级数</strong>(不管使用多少位来表达优先级,都是以 <code>MSB</code> 对齐)。</p>
+<p>举例来说,如果只使用了 3 个位来表达优先级,则优先级配置寄存器的结构会如图所示: </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/t_240303130433_Screenshot%202024-03-03%20210328.png" alt="优先级">  </p>
+<p>如果使用更多的位来表达优先级,则可以使用的值也更多,同时需要的门也更多，带来<strong>更多的成本和功耗</strong>。CM3 允许的最少使用位数为 3 个位,亦即至少要支持 8 级优先级。 </p>
+<p>使用 3 个位表达优先级 vs 使用 4 个位表达优先级的图景: </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303130610_Screenshot%202024-03-03%20210509.png" alt="对比"></p>
+<p>通过让优先级以 <strong><code>MSB</code>(最高有效位)</strong> 对齐,可以简化程序的跨器件移植。比如,如果一个程序早先在支持 4 位优先级的器件上运行,在移植到只支持 3 位优先级的器件后,其功能不受影响。但若是对齐到 <code>LSB</code>,则会使 <code>MSB</code> 丢失,导致数值大于 7 的低优先级一下子升高了,甚至会发生 <strong>“优先级反转”</strong>。</p>
+<blockquote>
+<p>如：8 号优先级因为损失了 <code>MSB</code>,原先为 <code>1000</code> LSB对齐后为 <code>000</code> ;而 15 号优先级则变成 7 号优先级,它则不会影响 0-6 号优先级,使得这个问题更隐蔽。</p>
+</blockquote>
+<h3 id="【抢占优先级与子优先级】"><a href="#【抢占优先级与子优先级】" class="headerlink" title="【抢占优先级与子优先级】"></a>【抢占优先级与子优先级】</h3><p>抢占优先级决定了抢占行为:当系统正在响应某 <code>异常 L</code> 时,如果来了抢占优先级更高的 <code>异常 H</code>,则 <code>H</code> 可以抢占 <code>L</code>。子优先级则处理“内务”：当<strong>抢占优先级相同</strong>的异常有不止一个悬起时,就<strong>最先响应子优先级最高的异常</strong>。 </p>
+<p>这种优先级分组做出了如下规定:<strong>子优先级至少是 1 个位</strong>。因此抢占优先级最多是 7 个位,这就造成了最多只有 128 级抢占的现象。  </p>
+<p>上述案例中使用了 3 个位来表达优先级，虽然 <code>[4:0]</code> 未使用,却<strong>允许从它们中分组</strong>。例如,如果从 <code>bit 1</code> 处分组,则所有可用的 8 个优先级都是抢占优先级,如图所示：  </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/t_240303133543_Screenshot%202024-03-03%20213429.png"></p>
+<hr>
+<h2 id="【SVC-和-PendSV】"><a href="#【SVC-和-PendSV】" class="headerlink" title="【SVC 和 PendSV】"></a>【SVC 和 PendSV】</h2><p><strong>这部分内容是我写这篇文章最想分析明白的内容</strong>，因为在 <code>RTOS</code> 任务调度内容中很多部分涉及 <code>PendSV</code> 。接下来，<strong>步入正题</strong>！  </p>
+<h3 id="【SVC】"><a href="#【SVC】" class="headerlink" title="【SVC】"></a>【SVC】</h3><p><code>SVC</code>(<em>系统服务调用</em>) 和 <code>PendSV</code>(<em>可悬起系统调用</em>),它们多用在上了操作系统的软件开发中。<code>SVC</code> 用于产生系统函数的调用请求。      </p>
+<p><strong>操作系统通常不让用户程序直接访问硬件</strong>,而是通过提供一些 <em>系统服务函数</em>,让用户程序使用 <code>SVC</code> 发出对系统服务函数的呼叫请求,以这种方法调用它们来间接访问硬件。<br>因此,当用户程序想要控制特定的硬件时,它就要产生一个 <em>SVC 异常</em>,然后操作系统提供的 <em>SVC 异常服务例程</em> 得到执行,它再调用相关的操作系统函数,后者完成用户程序请求的服务。  </p>
+<p><em>Ps：这种方式感觉就和 <code>linux</code> 的内核实现是一套东西。当然这个实现更简易。</em>  </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303135850_Screenshot%202024-03-03%20215748.png"></p>
+<p><em>SVC 异常</em> 通过执行 <em>SVC指令</em> 来产生。该指令需要一个立即数,充当系统调用代号。<em>SVC 异常</em> 服务例程稍后会提取出此代号,从而获知本次调用的具体要求,再调用相应的服务函数。例如： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SVC  0x3 ; 调用 3 号系统服务</span><br></pre></td></tr></table></figure>
+
+<h3 id="【PendSV】"><a href="#【PendSV】" class="headerlink" title="【PendSV】"></a>【PendSV】</h3><p>另一个相关的异常是 <code>PendSV</code>(<em>可悬起的系统调用</em>),它和 <code>SVC</code> 协同使用。   </p>
+<p>一方面,<em>SVC 异常</em> 是必须在执行 <em>SVC 指令</em> 后<strong>立即得到响应</strong>的(对于 SVC 异常来说,若因优先级不比当前正处理的高,或是其它原因使之无法立即响应,将上访成 <code>硬 fault</code>),<strong>应用程序执行 SVC 时都是希望所需的请求立即得到响应</strong>。  </p>
+<p>另一方面,<code>PendSV</code> 则不同,它是可以像普通的中断一样被悬起的(不像 <code>SVC</code> 那样会上访)。<code>OS</code> 可以利用它“缓期执行”一个<em>异常</em>,直到其它重要的任务完成后才执行动作。悬起 <code>PendSV</code> 的方法是:手工往 <code>NVIC</code> 的 <em>PendSV 悬起寄存器</em> 中写 <code>1</code>。<strong>悬起后,如果优先级不够高,则将缓期等待执行</strong>。 </p>
+<p><code>PendSV</code> 的典型使用场合是在<strong>上下文切换</strong>时(<em>在不同任务之间切换</em>)。例如,一个系统中有两个就绪的任务,上下文切换被触发的场合可以是:</p>
+<ul>
+<li>执行一个系统调用</li>
+<li>系统滴答定时器(SYSTICK)中断,(轮转调度中需要)</li>
+</ul>
+<blockquote>
+<p><strong>轮转调度</strong> 是一种常见的进程调度算法，通常用于多道批处理系统和时间片轮转调度中。其基本原理是每个进程被分配一个 <em>时间片</em>（时间量），在这个时间片内运行，然后被移到就绪队列的末尾，等待下一次调度。 </p>
+</blockquote>
+<p>举个简单的例子来辅助理解。假设有这么一个系统,里面有两个就绪的任务,并且通过 <em>SysTick 异常</em> 启动上下文切换。  </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303141104_Screenshot%202024-03-03%20221002.png"> </p>
+<p>上图是两个任务轮转调度的示意图。但若在产生 <em>SysTick 异常</em> 时正在响应一个中断,则 <em>SysTick 异常</em> 会抢占其 <code>ISR</code>。在这种情况下,<code>OS</code> 是<strong>不能执行上下文切换</strong>的,否则将使<strong>中断请求被延迟</strong>,而且在真实系统中延迟时间还往往不可预知——<strong>任何有一丁点实时要求的系统都决不能容忍这种事</strong>。因此,在 CM3 中也是严禁没商量——如果 <code>OS</code> 在某中断活跃时尝试切入 <code>线程模式</code>,将触犯用法 <code>fault 异常</code>。</p>
+<blockquote>
+<p>故在 <code>FreeRTOS</code> 中一般的 <code>API接口</code> 都有 <em>普通函数</em> 和 <em>ISR函数</em> 两个版本。简而言之，除非特殊否则不能在中断中调用 <code>RTOS</code> 的普通函数，因为可能引起任务调度。</p>
+</blockquote>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303141411_Screenshot%202024-03-03%20221308.png"></p>
+<p>为解决此问题,早期的 <code>OS</code> 大多会检测当前是否有中断在活跃中,只有在无任何中断需要响应时,才执行上下文切换(切换期间无法响应中断)。然而,这种方法的弊端在于,<strong>它可以把任务切换动作拖延很久</strong>(因为如果抢占了 <code>IRQ</code>,则本次 <code>SysTick</code> 在执行后不得作上下文切换,只能等待下一次 <em>SysTick 异常</em>),尤其是当某中断源的频率和 <em>SysTick 异常</em> 的频率比较接近时,会发生<strong>共振</strong>,使上下文切换迟迟不能进行。 </p>
+<p><strong>那么解决方法是</strong>,<code>PendSV</code> 完美解决这个问题。<em>PendSV 异常</em> 会自动延迟上下文切换的请求,<strong>直到其它的 ISR 都完成了处理后才放行</strong>。为实现这个机制,需要把 <code>PendSV</code> 编程为最低优先级的异常。如果 <code>OS</code> 检测到某 <code>IRQ</code> 正在活动并且被 <code>SysTick</code> 抢占,它将悬起一个 <em>PendSV 异常</em>,以便缓期执行上下文切换。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303142019_Screenshot%202024-03-03%20221916.png"></p>
+<blockquote>
+<ol>
+<li>任务 A 呼叫 SVC 来请求任务切换(例如,等待某些工作完成)</li>
+<li>OS 接收到请求,做好上下文切换的准备,并且悬起一个 PendSV 异常。</li>
+<li>当 CPU 退出 SVC 后,它立即进入 PendSV,从而执行上下文切换。</li>
+<li>当 PendSV 执行完毕后,将返回到任务 B,同时进入线程模式。</li>
+<li>发生了一个中断,并且中断服务程序开始执行</li>
+<li>在 ISR 执行过程中,发生 SysTick 异常,并且抢占了该 ISR。</li>
+<li>OS 执行必要的操作,然后悬起 PendSV 异常以作好上下文切换的准备。</li>
+<li>当 SysTick 退出后,回到先前被抢占的 ISR 中,ISR 继续执行</li>
+<li>ISR 执行完毕并退出后,PendSV 服务例程开始执行,并且在里面执行上下文切换</li>
+<li>当 PendSV 执行完毕后,回到任务 A,同时系统再次进入线程模式。</li>
+</ol>
+</blockquote>
+<blockquote>
+<p><strong>总结：SVC请求任务切换 -&gt; 悬起一个 PendSV 异常 -&gt; 任务切换。轮转调度（纯时间片）优化为悬起 PendSV 来切换任务，且 PendSV 优先级很低</strong>。</p>
+</blockquote>
+
       
     </div>
 
