@@ -21,26 +21,20 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="0. 前言最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，">
+  <meta name="description" content="配置方法 将 env_logger log 添加到 Cargo.toml ：打开 Cargo.toml 文件并在 [dependencies] 部分下添加 env_logger log 。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="WSL2 连接 Windows 的 USB 设备">
-<meta property="og:url" content="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/index.html">
+<meta property="og:title" content="rust终端输出debug信息">
+<meta property="og:url" content="http://example.com/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/index.html">
 <meta property="og:site_name" content="likko-liu&#39;s blog">
-<meta property="og:description" content="0. 前言最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，">
+<meta property="og:description" content="配置方法 将 env_logger log 添加到 Cargo.toml ：打开 Cargo.toml 文件并在 [dependencies] 部分下添加 env_logger log 。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png">
-<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025318_image.png">
-<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025628_image.png">
-<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425030011_image.png">
-<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_ea87f342.png">
-<meta property="article:published_time" content="2025-04-26T09:17:09.000Z">
-<meta property="article:modified_time" content="2025-04-26T13:39:17.463Z">
+<meta property="article:published_time" content="2024-06-26T01:44:14.000Z">
+<meta property="article:modified_time" content="2025-04-26T15:17:49.177Z">
 <meta property="article:author" content="likko liu">
 <meta property="article:tag" content="个人博客,Blog,likko-liu,嵌入式开发">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png">
 
-<link rel="canonical" href="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/">
+<link rel="canonical" href="http://example.com/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/">
 
 
 <script id="page-configurations">
@@ -53,7 +47,7 @@
   };
 </script>
 
-  <title>WSL2 连接 Windows 的 USB 设备 | likko-liu's blog</title>
+  <title>rust终端输出debug信息 | likko-liu's blog</title>
   
 
 
@@ -167,7 +161,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20180320024651_FtmYW.jpeg">
@@ -180,7 +174,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          WSL2 连接 Windows 的 USB 设备
+          rust终端输出debug信息
         </h1>
 
         <div class="post-meta">
@@ -189,13 +183,19 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2025-04-26 17:17:09 / 修改时间：21:39:17" itemprop="dateCreated datePublished" datetime="2025-04-26T17:17:09+08:00">2025-04-26</time>
+              <time title="创建时间：2024-06-26 09:44:14" itemprop="dateCreated datePublished" datetime="2024-06-26T09:44:14+08:00">2024-06-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-26 23:17:49" itemprop="dateModified" datetime="2025-04-26T23:17:49+08:00">2025-04-26</time>
+              </span>
 
           
-            <span id="/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/" class="post-meta-item leancloud_visitors" data-flag-title="WSL2 连接 Windows 的 USB 设备" title="阅读次数">
+            <span id="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/" class="post-meta-item leancloud_visitors" data-flag-title="rust终端输出debug信息" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -210,8 +210,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/" itemprop="commentCount"></span>
+    <a title="valine" href="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -226,39 +226,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。<br>但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。<br>目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，我乘凉。</p>
+        <h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><ul>
+<li>将 <code>env_logger</code> <code>log</code> 添加到 Cargo.toml ：<br>打开 Cargo.toml 文件并在 [dependencies] 部分下添加 <code>env_logger</code> <code>log</code> 。</li>
+</ul>
 <span id="more"></span>
-
-<h2 id="1-安装-package"><a href="#1-安装-package" class="headerlink" title="1. 安装 package"></a>1. 安装 package</h2><p>两个安装方法，自选，我选的是第二个。</p>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[package]</span><br><span class="line">name = <span class="string">&quot;helloworld&quot;</span></span><br><span class="line">version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">edition = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line">[dependencies]</span><br><span class="line">log = <span class="string">&quot;0.4&quot;</span></span><br><span class="line">env_logger = <span class="string">&quot;0.10&quot;</span></span><br></pre></td></tr></table></figure></blockquote>
 <ul>
-<li>github 获取，安装 <a target="_blank" rel="noopener" href="https://github.com/dorssel/usbipd-win/releases">usbipd-win</a> 项目。     </li>
-<li>也可使用 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/package-manager/winget/">Windows 程序包管理器程序 (winget)</a> 来安装 usbipd-win 项目。 如果已安装 winget，只需使用命令 <code>winget install --interactive --exact dorssel.usbipd-win</code> 安装 usbipd-win 即可。 如果省略了 <code>--interactive</code>，winget 可能会立即重启计算机（如果这是安装驱动程序所必需的操作）。<ul>
-<li>这将安装：</li>
-<li>名为 usbipd 的服务（显示名称：USBIP 设备主机）。 可使用 Windows 中的“服  务”应用检查此服务的状态。</li>
-<li>命令行工具 usbipd。 此工具的位置将添加到 PATH 环境变量。</li>
-<li>名为 usbipd 的防火墙规则，用于允许所有本地子网连接到服务。 可修改此防火墙规则以微调访问控制。</li>
-</ul>
+<li><p>导入 <code>env_logger</code> <code>log</code> crate：<br>确保将 <code>env_logger</code> <code>log</code> crate导入到 main.rs 或 lib.rs 文件中。</p>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> env_logger;</span><br><span class="line"><span class="keyword">use</span> log::debug;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>如果终端没有输出，可能是日志级别配置的问题。默认情况下， <code>env_logger</code> 可能不显示调试级别日志。需要设置适当的环境变量来配置日志级别。<br>在 Linux 和 macOS 上：</p>
+<blockquote>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export RUST_LOG=debug</span><br></pre></td></tr></table></figure><p>在 Windows 上（命令提示符）：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set RUST_LOG=debug</span><br></pre></td></tr></table></figure><p>在 Windows 上（PowerShell）：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$env:RUST_LOG=<span class="string">&quot;debug&quot;</span></span><br></pre></td></tr></table></figure></blockquote>
 </li>
 </ul>
-<h2 id="2-附加-USB-设备"><a href="#2-附加-USB-设备" class="headerlink" title="2. 附加 USB 设备"></a>2. 附加 USB 设备</h2><ol>
-<li><p>以 <em>管理员模式</em> 打开 PowerShell 和 WSL2 （也就是 Windows 和 WSL2 的终端）。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png" alt="alt text"></p>
-</li>
-<li><p>在 PowerShell 里输入 <code>usbipd list</code> 把接到 windows 上的 USB 设备列出来，方便看 USB-id（后面命令需要用到）。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025318_image.png" alt="alt text"></p>
-</li>
-<li><p>在附加 USB 设备之前，必须使用命令 <code>usbipd bind</code> 先共享设备（必须要做），从而允许它附加到 WSL2。运行命令后，再次使用命令 usbipd list 验证设备是否已共享。（后面的设备状态变成 <em>Shared</em>）<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025628_image.png" alt="alt text"></p>
-</li>
-<li><p>然后就可以附加 USB 设备了（注意，只要 USB 设备连接到 WSL，Windows 将无法使用它）。使用命令 <code>usbipd attach --wsl -b 2-1</code> 附加 USB 设备，附加到 WSL2 后，WSL2 运行的分发版本（也就是你 WSL 安装的 linux 系统，我的是 Ubuntu ）可以使用 USB 设备。 使用 <code>usbipd list</code> 验证设备是否已附加。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425030011_image.png" alt="alt text"></p>
-</li>
-<li><p>在 WSL 中检查下是否正常附加上 USB 设备，使用 <code>lsusb</code> 命令列出附加的 USB 设备。运行一个使用到 USB 串口的 RUST 程序，可以正常运行说明可以了。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_ea87f342.png" alt="alt text"><br>应该可以看到刚刚附加的设备，并且能够使用常规 Linux 工具与之交互。根据你的应用程序，可能还需要配置 udev 规则以允许非根用户访问设备。</p>
-</li>
-<li><p>WSL 中完成设备使用后，在 PowerShell（Windows） 里 <code>usbipd detach --busid &lt;busid&gt;</code> 物理断开 USB 设备，才能在 Windows 里使用这个 USB 设备（这个是微软推荐的做法）。或者粗暴点，直接把设备拔了，重新插一下，效果也一样。但是不知道有没有啥负面影响（目前还没发现）。</p>
-</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/connect-usb">微软 WSL 使用说明</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.listera.top/wsl2-zhi-chi-usb-chuan-kou/">wsl2 支持 usb 串口</a></li>
-</ul>
+<h2 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[package]</span><br><span class="line">name = <span class="string">&quot;helloworld&quot;</span></span><br><span class="line">version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">edition = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line">[dependencies]</span><br><span class="line">rand = <span class="string">&quot;0.8.5&quot;</span></span><br><span class="line">log = <span class="string">&quot;0.4&quot;</span></span><br><span class="line">env_logger = <span class="string">&quot;0.10&quot;</span></span><br></pre></td></tr></table></figure>
 
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[warn(unused_imports)]</span></span><br><span class="line"><span class="keyword">use</span> log::&#123;debug, error, log_enabled, info, Level&#125;;</span><br><span class="line"><span class="keyword">use</span> env_logger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">process_serial_data</span>(n: <span class="type">usize</span>, serial_buf: &amp;[<span class="type">u8</span>]) &#123;</span><br><span class="line">    <span class="comment">// Log the number of bytes received and the data in hexadecimal format</span></span><br><span class="line">    debug!(<span class="string">&quot;rx: &#123;&#125;, &#123;:02X?&#125;&quot;</span>, n, &amp;serial_buf[..n]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Other processing logic...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// Initialize the logger</span></span><br><span class="line">    env_logger::<span class="title function_ invoke__">init</span>();</span><br><span class="line"></span><br><span class="line">    debug!(<span class="string">&quot;this is a debug &#123;&#125;&quot;</span>, <span class="string">&quot;message&quot;</span>);</span><br><span class="line">    <span class="comment">// error!(&quot;this is printed by default&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Example data</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">n</span> = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">serial_buf</span> = <span class="built_in">vec!</span>[<span class="number">0xDE</span>, <span class="number">0xAD</span>, <span class="number">0xBE</span>, <span class="number">0xEF</span>, <span class="number">0x00</span>, <span class="number">0x01</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process the data</span></span><br><span class="line">    <span class="title function_ invoke__">process_serial_data</span>(n, &amp;serial_buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s</span><br><span class="line"> Running `target/debug/helloworld`</span><br><span class="line">[2024-06-26T01:29:31Z DEBUG helloworld] this is a debug message</span><br><span class="line">[2024-06-26T01:29:31Z DEBUG helloworld] rx: 4, [DE, AD, BE, EF]</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -273,7 +263,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/" title="WSL2 连接 Windows 的 USB 设备">http://example.com/2025/04/26/WSL2 连接 Windows 的 USB 设备/</a>
+    <a href="http://example.com/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/" title="rust终端输出debug信息">http://example.com/2024/06/26/rust终端输出debug信息/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -290,10 +280,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/" rel="prev" title="Cmocka单元测试配置与使用">
-      <i class="fa fa-chevron-left"></i> Cmocka单元测试配置与使用
+    <a href="/2024/04/25/WSL2%E8%BF%9E%E6%8E%A5Windows%E7%9A%84USB%E8%AE%BE%E5%A4%87/" rel="prev" title="WSL2连接Windows的USB设备">
+      <i class="fa fa-chevron-left"></i> WSL2连接Windows的USB设备
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/08/24/rustlings%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8A%A5%E9%94%99/" rel="next" title="rustlings v6.0 运行时出现 “ You are trying to run Rustlings using the old method before version 6”">
+      rustlings v6.0 运行时出现 “ You are trying to run Rustlings using the old method before version 6” <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -353,7 +346,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">0. 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-package"><span class="nav-number">2.</span> <span class="nav-text">1. 安装 package</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%99%84%E5%8A%A0-USB-%E8%AE%BE%E5%A4%87"><span class="nav-number">3.</span> <span class="nav-text">2. 附加 USB 设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">配置方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">完整示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA"><span class="nav-number">3.</span> <span class="nav-text">输出</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -369,7 +362,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -468,7 +461,7 @@
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/',]
       });
       });
   </script>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon.png">
+  <link rel="mask-icon" href="/images/icon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="STM32中断刨析一直以来，学习了 stm32 和 freertos 但在思考 RTOS 的任务调度时，涉及到 stm32 的中断相关的 PendSV 就感觉糊里糊涂。本篇记录刨析 stm32 的中断系统。  本文的讨论重点是最后一部分内容 【SVC 和 PendSV】。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32的中断刨析">
+<meta property="og:url" content="http://example.com/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/index.html">
+<meta property="og:site_name" content="likko-liu&#39;s blog">
+<meta property="og:description" content="STM32中断刨析一直以来，学习了 stm32 和 freertos 但在思考 RTOS 的任务调度时，涉及到 stm32 的中断相关的 PendSV 就感觉糊里糊涂。本篇记录刨析 stm32 的中断系统。  本文的讨论重点是最后一部分内容 【SVC 和 PendSV】。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104046353-1053208385.png">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104412215-2072086501.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/t_240303130433_Screenshot%202024-03-03%20210328.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303130610_Screenshot%202024-03-03%20210509.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/t_240303133543_Screenshot%202024-03-03%20213429.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303135850_Screenshot%202024-03-03%20215748.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303141104_Screenshot%202024-03-03%20221002.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303141411_Screenshot%202024-03-03%20221308.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303142019_Screenshot%202024-03-03%20221916.png">
+<meta property="article:published_time" content="2024-03-03T08:30:07.000Z">
+<meta property="article:modified_time" content="2025-04-26T15:18:01.887Z">
+<meta property="article:author" content="likko liu">
+<meta property="article:tag" content="个人博客,Blog,likko-liu,嵌入式开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104046353-1053208385.png">
+
+<link rel="canonical" href="http://example.com/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>STM32的中断刨析 | likko-liu's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">likko-liu's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一些个人经验、感悟、心得，愿共勉</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/likko-liu/" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20180320024651_FtmYW.jpeg">
+      <meta itemprop="name" content="likko liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="likko-liu's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          STM32的中断刨析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-03 16:30:07" itemprop="dateCreated datePublished" datetime="2024-03-03T16:30:07+08:00">2024-03-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-26 23:18:01" itemprop="dateModified" datetime="2025-04-26T23:18:01+08:00">2025-04-26</time>
+              </span>
+
+          
+            <span id="/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="STM32的中断刨析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="STM32中断刨析"><a href="#STM32中断刨析" class="headerlink" title="STM32中断刨析"></a>STM32中断刨析</h1><p>一直以来，学习了 <strong>stm32</strong> 和 <strong>freertos</strong> 但在思考 <code>RTOS</code> 的任务调度时，涉及到 stm32 的中断相关的 <code>PendSV</code> 就感觉糊里糊涂。本篇记录刨析 stm32 的中断系统。 </p>
+<p>本文的讨论重点是最后一部分内容 <code>【SVC 和 PendSV】</code>。</p>
+<span id="more"></span>
+<hr>
+<h2 id="【中断和异常】"><a href="#【中断和异常】" class="headerlink" title="【中断和异常】"></a>【中断和异常】</h2><p>在STM32微控制器中，<strong>中断</strong>（Interrupt）和<strong>异常</strong>（Exception）是两种处理器响应外部事件的机制。它们的区别和联系如下：  </p>
+<blockquote>
+<p>区别：  </p>
+<ul>
+<li>中断（Interrupt）：中断是<strong>外部事件（<em>例如外部IO的状态变化、定时器溢出等</em>）引起处理器正常执行流程的中断</strong>。当一个中断事件发生时，处理器会停止当前正在执行的程序，保存当前的执行环境（<em>比如寄存器状态</em>），然后转移到一个预先定义的中断服务函数（<em>Interrupt Service Routine</em>，ISR）去处理中断。处理完成后，再回到原来的执行流程。   </li>
+<li>异常（Exception）：异常是由于处理器内部的一些特定条件触发的事件，通常表示了<strong>处理器无法继续执行当前指令的情况</strong>。<br>异常可以分为两种类型：<strong>硬件异常</strong>（<em>比如除法零、非法指令等</em>）和<strong>软件异常</strong>（<em>例如系统调用、断言失败等</em>）。当异常发生时，处理器会类似中断一样，暂停当前执行流程，转移到一个特定的异常处理程序（<em>Exception Handler</em>）去处理该异常。</li>
+</ul>
+<p>联系：  </p>
+<ul>
+<li>中断和异常都是处理器对外部或内部事件的响应机制，都会导致当前执行流程被中断，然后转移到一个特定的处理程序去处理。  </li>
+<li>在STM32中，中断和异常都可以通过中断向量表（<em>Interrupt Vector Table</em>）来确定相应的 <em>处理程序入口地址</em>。   </li>
+<li>在处理中断和异常时，通常需要保存一些关键的状态信息（<em>比如寄存器状态</em>），以便在处理完后能够恢复原来的执行流程。</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="【嵌套向量中断控制器-NVIC-】"><a href="#【嵌套向量中断控制器-NVIC-】" class="headerlink" title="【嵌套向量中断控制器 NVIC 】"></a>【嵌套向量中断控制器 NVIC 】</h2><p><strong>嵌套向量中断控制器</strong>（支持中断嵌套）,简称 NVIC。NVIC 的寄存器以<strong>存储器映射</strong>（<em>将计算机系统中的物理存储器（RAM、ROM、外设寄存器等）映射到处理器的地址空间中</em>）的方式来访问,除了包含控制寄存器和中断处理的控制逻辑之外, <code>NVIC</code> 还包含了 <code>MPU</code>、 <code>SysTick 定时器</code> 以及调试控制相关的寄存器。  </p>
+<p>在中断发生时,它会自动取出对应的 <em>服务例程入口地址</em>,并且直接调用。</p>
+<p><strong>系统异常</strong>和<strong>外部中断</strong>。其中系统异常有 8 个(<em>如果把 <code>Reset</code> 和 <code>HardFault</code> 也算上的话就是 10 个</em>),外部中断有 60 个。除了个别异常的优先级被定死外,其它异常的优先级都是可编程的。  </p>
+<p><img src="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104046353-1053208385.png" alt="向量表"><br><img src="https://img2018.cnblogs.com/blog/1251897/201908/1251897-20190801104412215-2072086501.png" alt="向量表"></p>
+<blockquote>
+<ul>
+<li><p><code>MSP</code> 代表Main Stack Pointer（<strong>主堆栈指针</strong>）。<code>MSP</code> 是一个特殊的寄存器，用于指示主堆栈的顶部地址。主堆栈用于存储处理器<strong>执行中断服务程序时的上下文信息</strong>，比如寄存器的状态、函数调用的返回地址等。当处理器进入中断服务程序时，会自动将当前的寄存器状态保存到主堆栈中，以便在中断服务程序执行完毕后能够恢复原来的执行状态。   </p>
+</li>
+<li><p>在STM32中，<code>MSP</code> 通常由系统初始化代码在启动时初始化为主堆栈的起始地址。当中断发生时，处理器会自动将 <code>MSP</code> 保存到当前线程堆栈指针（<em>Process Stack Pointer</em> , PSP）中，并将 <code>MSP</code> 指向<em>主堆栈</em>，从而确保中断服务程序能够正确地使用主堆栈。</p>
+</li>
+<li><p><code>PSP</code> 代表Process Stack Pointer（进程堆栈指针）。 <code>PSP</code> 是一个特殊的寄存器，用于指示当前线程（或进程）的堆栈的顶部地址。每个线程都有自己的堆栈，用于保存函数调用的上下文信息、局部变量以及其他临时数据。</p>
+</li>
+</ul>
+</blockquote>
+<p>当发生了异常并且要响应它时,CM3 需要定位其服务例程的入口地址。这些入口地址存储在所谓的“(异常)向量表”中。缺省情况下,CM3 认为该表位于零地址处,且各向量占用 <code>4字节</code>。<br><strong>【补充】</strong>：根据 <code>《CM3权威手册》</code> 描述，上电后 <code>0x0000_0000</code> 为**主堆栈指针（MSP）**的初始值。</p>
+<hr>
+<h2 id="【优先级】"><a href="#【优先级】" class="headerlink" title="【优先级】"></a>【优先级】</h2><p>在 CM3 中,优先级对于异常来说很关键的,它会决定一个异常是否能被掩蔽,以及在未掩蔽的情况下何时可以响应。<strong>优先级的数值越小,则优先级越高</strong>。 </p>
+<p>原则上,CM3 支持 3 个固定的高优先级和多达 256 级的 <em>可编程优先级</em>,<strong>并且支持 128 级抢占（还需包含子优先级，后续解释）</strong>。但是,绝大多数 CM3 芯片都会精简设计,以致实际上支持的优先级数会更少,如 8 级,16 级,32 级等。<strong>它们在设计时会裁掉表达优先级的几个低端有效位,以减少优先级的级数</strong>(不管使用多少位来表达优先级,都是以 <code>MSB</code> 对齐)。</p>
+<p>举例来说,如果只使用了 3 个位来表达优先级,则优先级配置寄存器的结构会如图所示: </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/t_240303130433_Screenshot%202024-03-03%20210328.png" alt="优先级">  </p>
+<p>如果使用更多的位来表达优先级,则可以使用的值也更多,同时需要的门也更多，带来<strong>更多的成本和功耗</strong>。CM3 允许的最少使用位数为 3 个位,亦即至少要支持 8 级优先级。 </p>
+<p>使用 3 个位表达优先级 vs 使用 4 个位表达优先级的图景: </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303130610_Screenshot%202024-03-03%20210509.png" alt="对比"></p>
+<p>通过让优先级以 <strong><code>MSB</code>(最高有效位)</strong> 对齐,可以简化程序的跨器件移植。比如,如果一个程序早先在支持 4 位优先级的器件上运行,在移植到只支持 3 位优先级的器件后,其功能不受影响。但若是对齐到 <code>LSB</code>,则会使 <code>MSB</code> 丢失,导致数值大于 7 的低优先级一下子升高了,甚至会发生 <strong>“优先级反转”</strong>。</p>
+<blockquote>
+<p>如：8 号优先级因为损失了 <code>MSB</code>,原先为 <code>1000</code> LSB对齐后为 <code>000</code> ;而 15 号优先级则变成 7 号优先级,它则不会影响 0-6 号优先级,使得这个问题更隐蔽。</p>
+</blockquote>
+<h3 id="【抢占优先级与子优先级】"><a href="#【抢占优先级与子优先级】" class="headerlink" title="【抢占优先级与子优先级】"></a>【抢占优先级与子优先级】</h3><p>抢占优先级决定了抢占行为:当系统正在响应某 <code>异常 L</code> 时,如果来了抢占优先级更高的 <code>异常 H</code>,则 <code>H</code> 可以抢占 <code>L</code>。子优先级则处理“内务”：当<strong>抢占优先级相同</strong>的异常有不止一个悬起时,就<strong>最先响应子优先级最高的异常</strong>。 </p>
+<p>这种优先级分组做出了如下规定:<strong>子优先级至少是 1 个位</strong>。因此抢占优先级最多是 7 个位,这就造成了最多只有 128 级抢占的现象。  </p>
+<p>上述案例中使用了 3 个位来表达优先级，虽然 <code>[4:0]</code> 未使用,却<strong>允许从它们中分组</strong>。例如,如果从 <code>bit 1</code> 处分组,则所有可用的 8 个优先级都是抢占优先级,如图所示：  </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/t_240303133543_Screenshot%202024-03-03%20213429.png"></p>
+<hr>
+<h2 id="【SVC-和-PendSV】"><a href="#【SVC-和-PendSV】" class="headerlink" title="【SVC 和 PendSV】"></a>【SVC 和 PendSV】</h2><p><strong>这部分内容是我写这篇文章最想分析明白的内容</strong>，因为在 <code>RTOS</code> 任务调度内容中很多部分涉及 <code>PendSV</code> 。接下来，<strong>步入正题</strong>！  </p>
+<h3 id="【SVC】"><a href="#【SVC】" class="headerlink" title="【SVC】"></a>【SVC】</h3><p><code>SVC</code>(<em>系统服务调用</em>) 和 <code>PendSV</code>(<em>可悬起系统调用</em>),它们多用在上了操作系统的软件开发中。<code>SVC</code> 用于产生系统函数的调用请求。      </p>
+<p><strong>操作系统通常不让用户程序直接访问硬件</strong>,而是通过提供一些 <em>系统服务函数</em>,让用户程序使用 <code>SVC</code> 发出对系统服务函数的呼叫请求,以这种方法调用它们来间接访问硬件。<br>因此,当用户程序想要控制特定的硬件时,它就要产生一个 <em>SVC 异常</em>,然后操作系统提供的 <em>SVC 异常服务例程</em> 得到执行,它再调用相关的操作系统函数,后者完成用户程序请求的服务。  </p>
+<p><em>Ps：这种方式感觉就和 <code>linux</code> 的内核实现是一套东西。当然这个实现更简易。</em>  </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303135850_Screenshot%202024-03-03%20215748.png"></p>
+<p><em>SVC 异常</em> 通过执行 <em>SVC指令</em> 来产生。该指令需要一个立即数,充当系统调用代号。<em>SVC 异常</em> 服务例程稍后会提取出此代号,从而获知本次调用的具体要求,再调用相应的服务函数。例如： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SVC  0x3 ; 调用 3 号系统服务</span><br></pre></td></tr></table></figure>
+
+<h3 id="【PendSV】"><a href="#【PendSV】" class="headerlink" title="【PendSV】"></a>【PendSV】</h3><p>另一个相关的异常是 <code>PendSV</code>(<em>可悬起的系统调用</em>),它和 <code>SVC</code> 协同使用。   </p>
+<p>一方面,<em>SVC 异常</em> 是必须在执行 <em>SVC 指令</em> 后<strong>立即得到响应</strong>的(对于 SVC 异常来说,若因优先级不比当前正处理的高,或是其它原因使之无法立即响应,将上访成 <code>硬 fault</code>),<strong>应用程序执行 SVC 时都是希望所需的请求立即得到响应</strong>。  </p>
+<p>另一方面,<code>PendSV</code> 则不同,它是可以像普通的中断一样被悬起的(不像 <code>SVC</code> 那样会上访)。<code>OS</code> 可以利用它“缓期执行”一个<em>异常</em>,直到其它重要的任务完成后才执行动作。悬起 <code>PendSV</code> 的方法是:手工往 <code>NVIC</code> 的 <em>PendSV 悬起寄存器</em> 中写 <code>1</code>。<strong>悬起后,如果优先级不够高,则将缓期等待执行</strong>。 </p>
+<p><code>PendSV</code> 的典型使用场合是在<strong>上下文切换</strong>时(<em>在不同任务之间切换</em>)。例如,一个系统中有两个就绪的任务,上下文切换被触发的场合可以是:</p>
+<ul>
+<li>执行一个系统调用</li>
+<li>系统滴答定时器(SYSTICK)中断,(轮转调度中需要)</li>
+</ul>
+<blockquote>
+<p><strong>轮转调度</strong> 是一种常见的进程调度算法，通常用于多道批处理系统和时间片轮转调度中。其基本原理是每个进程被分配一个 <em>时间片</em>（时间量），在这个时间片内运行，然后被移到就绪队列的末尾，等待下一次调度。 </p>
+</blockquote>
+<p>举个简单的例子来辅助理解。假设有这么一个系统,里面有两个就绪的任务,并且通过 <em>SysTick 异常</em> 启动上下文切换。  </p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303141104_Screenshot%202024-03-03%20221002.png"> </p>
+<p>上图是两个任务轮转调度的示意图。但若在产生 <em>SysTick 异常</em> 时正在响应一个中断,则 <em>SysTick 异常</em> 会抢占其 <code>ISR</code>。在这种情况下,<code>OS</code> 是<strong>不能执行上下文切换</strong>的,否则将使<strong>中断请求被延迟</strong>,而且在真实系统中延迟时间还往往不可预知——<strong>任何有一丁点实时要求的系统都决不能容忍这种事</strong>。因此,在 CM3 中也是严禁没商量——如果 <code>OS</code> 在某中断活跃时尝试切入 <code>线程模式</code>,将触犯用法 <code>fault 异常</code>。</p>
+<blockquote>
+<p>故在 <code>FreeRTOS</code> 中一般的 <code>API接口</code> 都有 <em>普通函数</em> 和 <em>ISR函数</em> 两个版本。简而言之，除非特殊否则不能在中断中调用 <code>RTOS</code> 的普通函数，因为可能引起任务调度。</p>
+</blockquote>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303141411_Screenshot%202024-03-03%20221308.png"></p>
+<p>为解决此问题,早期的 <code>OS</code> 大多会检测当前是否有中断在活跃中,只有在无任何中断需要响应时,才执行上下文切换(切换期间无法响应中断)。然而,这种方法的弊端在于,<strong>它可以把任务切换动作拖延很久</strong>(因为如果抢占了 <code>IRQ</code>,则本次 <code>SysTick</code> 在执行后不得作上下文切换,只能等待下一次 <em>SysTick 异常</em>),尤其是当某中断源的频率和 <em>SysTick 异常</em> 的频率比较接近时,会发生<strong>共振</strong>,使上下文切换迟迟不能进行。 </p>
+<p><strong>那么解决方法是</strong>,<code>PendSV</code> 完美解决这个问题。<em>PendSV 异常</em> 会自动延迟上下文切换的请求,<strong>直到其它的 ISR 都完成了处理后才放行</strong>。为实现这个机制,需要把 <code>PendSV</code> 编程为最低优先级的异常。如果 <code>OS</code> 检测到某 <code>IRQ</code> 正在活动并且被 <code>SysTick</code> 抢占,它将悬起一个 <em>PendSV 异常</em>,以便缓期执行上下文切换。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2382030/o_240303142019_Screenshot%202024-03-03%20221916.png"></p>
+<blockquote>
+<ol>
+<li>任务 A 呼叫 SVC 来请求任务切换(例如,等待某些工作完成)</li>
+<li>OS 接收到请求,做好上下文切换的准备,并且悬起一个 PendSV 异常。</li>
+<li>当 CPU 退出 SVC 后,它立即进入 PendSV,从而执行上下文切换。</li>
+<li>当 PendSV 执行完毕后,将返回到任务 B,同时进入线程模式。</li>
+<li>发生了一个中断,并且中断服务程序开始执行</li>
+<li>在 ISR 执行过程中,发生 SysTick 异常,并且抢占了该 ISR。</li>
+<li>OS 执行必要的操作,然后悬起 PendSV 异常以作好上下文切换的准备。</li>
+<li>当 SysTick 退出后,回到先前被抢占的 ISR 中,ISR 继续执行</li>
+<li>ISR 执行完毕并退出后,PendSV 服务例程开始执行,并且在里面执行上下文切换</li>
+<li>当 PendSV 执行完毕后,回到任务 A,同时系统再次进入线程模式。</li>
+</ol>
+</blockquote>
+<blockquote>
+<p><strong>总结：SVC请求任务切换 -&gt; 悬起一个 PendSV 异常 -&gt; 任务切换。轮转调度（纯时间片）优化为悬起 PendSV 来切换任务，且 PendSV 优先级很低</strong>。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>likko liu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/" title="STM32的中断刨析">http://example.com/2024/03/03/STM32的中断刨析/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/11/Cmocka%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/" rel="next" title="Cmocka单元测试配置与使用">
+      Cmocka单元测试配置与使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#STM32%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">STM32中断刨析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%90%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E3%80%91"><span class="nav-number">1.1.</span> <span class="nav-text">【中断和异常】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%90%E5%B5%8C%E5%A5%97%E5%90%91%E9%87%8F%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6%E5%99%A8-NVIC-%E3%80%91"><span class="nav-number">1.2.</span> <span class="nav-text">【嵌套向量中断控制器 NVIC 】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%90%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%91"><span class="nav-number">1.3.</span> <span class="nav-text">【优先级】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%90%E6%8A%A2%E5%8D%A0%E4%BC%98%E5%85%88%E7%BA%A7%E4%B8%8E%E5%AD%90%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%91"><span class="nav-number">1.3.1.</span> <span class="nav-text">【抢占优先级与子优先级】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E3%80%90SVC-%E5%92%8C-PendSV%E3%80%91"><span class="nav-number">1.4.</span> <span class="nav-text">【SVC 和 PendSV】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%90SVC%E3%80%91"><span class="nav-number">1.4.1.</span> <span class="nav-text">【SVC】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E3%80%90PendSV%E3%80%91"><span class="nav-number">1.4.2.</span> <span class="nav-text">【PendSV】</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="likko liu"
+      src="/images/20180320024651_FtmYW.jpeg">
+  <p class="site-author-name" itemprop="name">likko liu</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/likko-liu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;likko-liu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/kikkoliu69@gmail.com" title="E-Mail → kikkoliu69@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2024 – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">likko liu</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/',]
+      });
+      });
+  </script>
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'aEJ1WUy5633g86Am1iqSto8w-MdYXbMMI',
+      appKey     : 'Xm5O8rzwlXUUEN4sJL0Sc8jl',
+      placeholder: "欢迎留言",
+      avatar     : '',
+      meta       : guest,
+      pageSize   : '5' || 10,
+      visitor    : true,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : 'https://aej1wuy5.api.lncldglobal.com'
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
