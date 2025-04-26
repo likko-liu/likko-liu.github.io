@@ -20,29 +20,39 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="likko-liu&#39;s blog">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="0. 前言最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WSL2 连接 Windows 的 USB 设备">
+<meta property="og:url" content="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/index.html">
 <meta property="og:site_name" content="likko-liu&#39;s blog">
+<meta property="og:description" content="0. 前言最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025318_image.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025628_image.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425030011_image.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_ea87f342.png">
+<meta property="article:published_time" content="2025-04-26T09:17:09.000Z">
+<meta property="article:modified_time" content="2025-04-26T13:39:17.463Z">
 <meta property="article:author" content="likko liu">
 <meta property="article:tag" content="个人博客,Blog,likko-liu,嵌入式开发">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>likko-liu's blog</title>
+  <title>WSL2 连接 Windows 的 USB 设备 | likko-liu's blog</title>
   
 
 
@@ -149,9 +159,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -167,10 +178,9 @@
       <meta itemprop="name" content="likko-liu's blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/" class="post-title-link" itemprop="url">WSL2 连接 Windows 的 USB 设备</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          WSL2 连接 Windows 的 USB 设备
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -215,124 +225,87 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。<br>但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。<br>目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，我乘凉。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+        <h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。<br>但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。<br>目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，我乘凉。</p>
+<span id="more"></span>
+
+<h2 id="1-安装-package"><a href="#1-安装-package" class="headerlink" title="1. 安装 package"></a>1. 安装 package</h2><p>两个安装方法，自选，我选的是第二个。</p>
+<ul>
+<li>github 获取，安装 <a target="_blank" rel="noopener" href="https://github.com/dorssel/usbipd-win/releases">usbipd-win</a> 项目。     </li>
+<li>也可使用 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/package-manager/winget/">Windows 程序包管理器程序 (winget)</a> 来安装 usbipd-win 项目。 如果已安装 winget，只需使用命令 <code>winget install --interactive --exact dorssel.usbipd-win</code> 安装 usbipd-win 即可。 如果省略了 <code>--interactive</code>，winget 可能会立即重启计算机（如果这是安装驱动程序所必需的操作）。<ul>
+<li>这将安装：</li>
+<li>名为 usbipd 的服务（显示名称：USBIP 设备主机）。 可使用 Windows 中的“服  务”应用检查此服务的状态。</li>
+<li>命令行工具 usbipd。 此工具的位置将添加到 PATH 环境变量。</li>
+<li>名为 usbipd 的防火墙规则，用于允许所有本地子网连接到服务。 可修改此防火墙规则以微调访问控制。</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-附加-USB-设备"><a href="#2-附加-USB-设备" class="headerlink" title="2. 附加 USB 设备"></a>2. 附加 USB 设备</h2><ol>
+<li><p>以 <em>管理员模式</em> 打开 PowerShell 和 WSL2 （也就是 Windows 和 WSL2 的终端）。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425024941_image.png" alt="alt text"></p>
+</li>
+<li><p>在 PowerShell 里输入 <code>usbipd list</code> 把接到 windows 上的 USB 设备列出来，方便看 USB-id（后面命令需要用到）。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025318_image.png" alt="alt text"></p>
+</li>
+<li><p>在附加 USB 设备之前，必须使用命令 <code>usbipd bind</code> 先共享设备（必须要做），从而允许它附加到 WSL2。运行命令后，再次使用命令 usbipd list 验证设备是否已共享。（后面的设备状态变成 <em>Shared</em>）<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425025628_image.png" alt="alt text"></p>
+</li>
+<li><p>然后就可以附加 USB 设备了（注意，只要 USB 设备连接到 WSL，Windows 将无法使用它）。使用命令 <code>usbipd attach --wsl -b 2-1</code> 附加 USB 设备，附加到 WSL2 后，WSL2 运行的分发版本（也就是你 WSL 安装的 linux 系统，我的是 Ubuntu ）可以使用 USB 设备。 使用 <code>usbipd list</code> 验证设备是否已附加。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240425030011_image.png" alt="alt text"></p>
+</li>
+<li><p>在 WSL 中检查下是否正常附加上 USB 设备，使用 <code>lsusb</code> 命令列出附加的 USB 设备。运行一个使用到 USB 串口的 RUST 程序，可以正常运行说明可以了。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_ea87f342.png" alt="alt text"><br>应该可以看到刚刚附加的设备，并且能够使用常规 Linux 工具与之交互。根据你的应用程序，可能还需要配置 udev 规则以允许非根用户访问设备。</p>
+</li>
+<li><p>WSL 中完成设备使用后，在 PowerShell（Windows） 里 <code>usbipd detach --busid &lt;busid&gt;</code> 物理断开 USB 设备，才能在 Windows 里使用这个 USB 设备（这个是微软推荐的做法）。或者粗暴点，直接把设备拔了，重新插一下，效果也一样。但是不知道有没有啥负面影响（目前还没发现）。</p>
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/wsl/connect-usb">微软 WSL 使用说明</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.listera.top/wsl2-zhi-chi-usb-chuan-kou/">wsl2 支持 usb 串口</a></li>
+</ul>
+
     </div>
 
     
     
     
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/20180320024651_FtmYW.jpeg">
-      <meta itemprop="name" content="likko liu">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="likko-liu's blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">Cmocka单元测试配置与使用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2025-04-26 17:16:09 / 修改时间：21:39:13" itemprop="dateCreated datePublished" datetime="2025-04-26T17:16:09+08:00">2025-04-26</time>
-            </span>
-
-          
-            <span id="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="Cmocka单元测试配置与使用" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Valine：</span>
-    
-    <a title="valine" href="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。</p>
-<h2 id="1-Cmocka介绍"><a href="#1-Cmocka介绍" class="headerlink" title="1. Cmocka介绍"></a>1. Cmocka介绍</h2><p><a target="_blank" rel="noopener" href="https://cmocka.org/">Cmocka</a> 是一个 C 单元测试框架，支持 <strong>mock objects</strong>（打桩）。它只需要标准的 C 库，可以在一系列计算平台（包括 embedded ）和不同的编译器上运行。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>likko liu
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/" title="WSL2 连接 Windows 的 USB 设备">http://example.com/2025/04/26/WSL2 连接 Windows 的 USB 设备/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/26/Cmocka%20%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/" rel="prev" title="Cmocka单元测试配置与使用">
+      <i class="fa fa-chevron-left"></i> Cmocka单元测试配置与使用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
 
           </div>
           
+    <div class="comments" id="valine-comments"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -379,6 +352,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">0. 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-package"><span class="nav-number">2.</span> <span class="nav-text">1. 安装 package</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%99%84%E5%8A%A0-USB-%E8%AE%BE%E5%A4%87"><span class="nav-number">3.</span> <span class="nav-text">2. 附加 USB 设备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,6 +461,16 @@
   
 
   
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri === 'http://example.com/2025/04/26/WSL2%20%E8%BF%9E%E6%8E%A5%20Windows%20%E7%9A%84%20USB%20%E8%AE%BE%E5%A4%87/',]
+      });
+      });
+  </script>
 
 
 <script>
