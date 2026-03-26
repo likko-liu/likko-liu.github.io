@@ -21,20 +21,27 @@
     var CONFIG = {"hostname":"likko-liu.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="配置方法 将 env_logger log 添加到 Cargo.toml ：打开 Cargo.toml 文件并在 [dependencies] 部分下添加 env_logger log 。   12345678[package]name &#x3D; &quot;helloworld&quot;version &#x3D; &quot;0.1.0&quot;edition &#x3D; &quot;2021&quot;[de">
+  <meta name="description" content="1. 背景在 wsl2 里开发一个小项目，之前一直使用功能正常。 今天按以往的流程（打开 wsl2(ubuntu) 终端，进入到指定文件夹目录下，输入 code . 命令，在 vscode 中打开该文件夹），发现 vscode 需要更新，但是出现更新失败的情况，故无法在 vscode 中打开该文件夹，错误输出如下。  2. 分析因为我一直使用 VPN 代理 wsl2，之前也都设置好了，但是发现在">
 <meta property="og:type" content="article">
-<meta property="og:title" content="rust终端输出debug信息">
-<meta property="og:url" content="https://likko-liu.github.io/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/index.html">
+<meta property="og:title" content="WSL2 使用 code . 命令打开文件夹时，出现 &quot;Unable to establish SSL connection. ERROR: Failed to download...&quot;">
+<meta property="og:url" content="https://likko-liu.github.io/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/index.html">
 <meta property="og:site_name" content="likko-liu&#39;s blog">
-<meta property="og:description" content="配置方法 将 env_logger log 添加到 Cargo.toml ：打开 Cargo.toml 文件并在 [dependencies] 部分下添加 env_logger log 。   12345678[package]name &#x3D; &quot;helloworld&quot;version &#x3D; &quot;0.1.0&quot;edition &#x3D; &quot;2021&quot;[de">
+<meta property="og:description" content="1. 背景在 wsl2 里开发一个小项目，之前一直使用功能正常。 今天按以往的流程（打开 wsl2(ubuntu) 终端，进入到指定文件夹目录下，输入 code . 命令，在 vscode 中打开该文件夹），发现 vscode 需要更新，但是出现更新失败的情况，故无法在 vscode 中打开该文件夹，错误输出如下。  2. 分析因为我一直使用 VPN 代理 wsl2，之前也都设置好了，但是发现在">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-26T01:44:14.000Z">
-<meta property="article:modified_time" content="2025-04-26T15:22:31.081Z">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162256904-2062146745.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162753461-180915758.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162822781-2141760377.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925163006681-1543696888.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925163833365-282955386.png">
+<meta property="og:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925164147194-1775292874.png">
+<meta property="article:published_time" content="2024-09-25T08:31:58.000Z">
+<meta property="article:modified_time" content="2026-03-26T14:13:23.267Z">
 <meta property="article:author" content="likko liu">
 <meta property="article:tag" content="个人博客,Blog,likko-liu,嵌入式开发">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162256904-2062146745.png">
 
-<link rel="canonical" href="https://likko-liu.github.io/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/">
+<link rel="canonical" href="https://likko-liu.github.io/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/">
 
 
 <script id="page-configurations">
@@ -47,7 +54,7 @@
   };
 </script>
 
-  <title>rust终端输出debug信息 | likko-liu's blog</title>
+  <title>WSL2 使用 code . 命令打开文件夹时，出现 "Unable to establish SSL connection. ERROR: Failed to download..." | likko-liu's blog</title>
   
 
 
@@ -161,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://likko-liu.github.io/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/">
+    <link itemprop="mainEntityOfPage" href="https://likko-liu.github.io/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/20180320024651_FtmYW.jpeg">
@@ -174,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          rust终端输出debug信息
+          WSL2 使用 code . 命令打开文件夹时，出现 "Unable to establish SSL connection. ERROR: Failed to download..."
         </h1>
 
         <div class="post-meta">
@@ -184,18 +191,18 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-06-26 09:44:14" itemprop="dateCreated datePublished" datetime="2024-06-26T09:44:14+08:00">2024-06-26</time>
+              <time title="创建时间：2024-09-25 16:31:58" itemprop="dateCreated datePublished" datetime="2024-09-25T16:31:58+08:00">2024-09-25</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:22:31" itemprop="dateModified" datetime="2025-04-26T23:22:31+08:00">2025-04-26</time>
+                <time title="修改时间：2026-03-26 22:13:23" itemprop="dateModified" datetime="2026-03-26T22:13:23+08:00">2026-03-26</time>
               </span>
 
           
-            <span id="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/" class="post-meta-item leancloud_visitors" data-flag-title="rust终端输出debug信息" title="阅读次数">
+            <span id="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/" class="post-meta-item leancloud_visitors" data-flag-title="WSL2 使用 code . 命令打开文件夹时，出现 "Unable to establish SSL connection. ERROR: Failed to download..."" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -210,8 +217,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/" itemprop="commentCount"></span>
+    <a title="valine" href="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -227,28 +234,33 @@
 
       
         <span id="more"></span>
-<h2 id="配置方法"><a href="#配置方法" class="headerlink" title="配置方法"></a>配置方法</h2><ul>
-<li>将 <code>env_logger</code> <code>log</code> 添加到 Cargo.toml ：<br>打开 Cargo.toml 文件并在 [dependencies] 部分下添加 <code>env_logger</code> <code>log</code> 。</li>
-</ul>
-<blockquote>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[package]</span><br><span class="line">name = <span class="string">&quot;helloworld&quot;</span></span><br><span class="line">version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">edition = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line">[dependencies]</span><br><span class="line">log = <span class="string">&quot;0.4&quot;</span></span><br><span class="line">env_logger = <span class="string">&quot;0.10&quot;</span></span><br></pre></td></tr></table></figure></blockquote>
-<ul>
-<li><p>导入 <code>env_logger</code> <code>log</code> crate：<br>确保将 <code>env_logger</code> <code>log</code> crate导入到 main.rs 或 lib.rs 文件中。</p>
-<blockquote>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> env_logger;</span><br><span class="line"><span class="keyword">use</span> log::debug;</span><br></pre></td></tr></table></figure></blockquote>
-</li>
-<li><p>如果终端没有输出，可能是日志级别配置的问题。默认情况下， <code>env_logger</code> 可能不显示调试级别日志。需要设置适当的环境变量来配置日志级别。<br>在 Linux 和 macOS 上：</p>
-<blockquote>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export RUST_LOG=debug</span><br></pre></td></tr></table></figure><p>在 Windows 上（命令提示符）：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set RUST_LOG=debug</span><br></pre></td></tr></table></figure><p>在 Windows 上（PowerShell）：</p>
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$env:RUST_LOG=<span class="string">&quot;debug&quot;</span></span><br></pre></td></tr></table></figure></blockquote>
-</li>
-</ul>
-<h2 id="完整示例"><a href="#完整示例" class="headerlink" title="完整示例"></a>完整示例</h2><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[package]</span><br><span class="line">name = <span class="string">&quot;helloworld&quot;</span></span><br><span class="line">version = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line">edition = <span class="string">&quot;2021&quot;</span></span><br><span class="line"></span><br><span class="line">[dependencies]</span><br><span class="line">rand = <span class="string">&quot;0.8.5&quot;</span></span><br><span class="line">log = <span class="string">&quot;0.4&quot;</span></span><br><span class="line">env_logger = <span class="string">&quot;0.10&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h3><p>在 wsl2 里开发一个小项目，之前一直使用功能正常。</p>
+<p>今天按以往的流程（打开 wsl2(ubuntu) 终端，进入到指定文件夹目录下，输入 <code>code .</code> 命令，在 vscode 中打开该文件夹），发现 vscode 需要更新，但是出现更新失败的情况，故无法在 vscode 中打开该文件夹，错误输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162256904-2062146745.png"></p>
+<h3 id="2-分析"><a href="#2-分析" class="headerlink" title="2. 分析"></a>2. 分析</h3><p>因为我一直使用 VPN 代理 wsl2，之前也都设置好了，但是发现在错误输出中有如下信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Connecting to 127.0.0.1:7890... connected.</span><br><span class="line">Unable to establish SSL connection.</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[warn(unused_imports)]</span></span><br><span class="line"><span class="keyword">use</span> log::&#123;debug, error, log_enabled, info, Level&#125;;</span><br><span class="line"><span class="keyword">use</span> env_logger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">process_serial_data</span>(n: <span class="type">usize</span>, serial_buf: &amp;[<span class="type">u8</span>]) &#123;</span><br><span class="line">    <span class="comment">// Log the number of bytes received and the data in hexadecimal format</span></span><br><span class="line">    debug!(<span class="string">&quot;rx: &#123;&#125;, &#123;:02X?&#125;&quot;</span>, n, &amp;serial_buf[..n]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Other processing logic...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() &#123;</span><br><span class="line">    <span class="comment">// Initialize the logger</span></span><br><span class="line">    env_logger::<span class="title function_ invoke__">init</span>();</span><br><span class="line"></span><br><span class="line">    debug!(<span class="string">&quot;this is a debug &#123;&#125;&quot;</span>, <span class="string">&quot;message&quot;</span>);</span><br><span class="line">    <span class="comment">// error!(&quot;this is printed by default&quot;);</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Example data</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">n</span> = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">serial_buf</span> = <span class="built_in">vec!</span>[<span class="number">0xDE</span>, <span class="number">0xAD</span>, <span class="number">0xBE</span>, <span class="number">0xEF</span>, <span class="number">0x00</span>, <span class="number">0x01</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process the data</span></span><br><span class="line">    <span class="title function_ invoke__">process_serial_data</span>(n, &amp;serial_buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>显示能够正常挂上代理，但是 SSL 连接建立失败。我觉得先排查一下他是否真的正常挂上了主机的代理。</p>
+<p>ping 主机 IP，<code>ping 192.168.110.49</code> 输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162753461-180915758.png"></p>
+<p>ping 百度，<code>ping www.google.com</code> 输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162822781-2141760377.png"></p>
+<p>最后，尝试连接 Google，<code>wget www.google.com</code> 输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925163006681-1543696888.png"></p>
+<p>综上，发现代理应该是没问题的。</p>
+<h3 id="3-进一步分析"><a href="#3-进一步分析" class="headerlink" title="3. 进一步分析"></a>3. 进一步分析</h3><p>离了个大谱，尝试直接把主机的 VPN 关掉，还是没有效果。</p>
+<p>此时想到，下载更新这个 linux 的 vscode 是要用到 wget 的，但前面测试 <code>wget google</code> 又没问题，那么就再试试其他动作使用 wget 有没有问题。</p>
+<p>刚好，很久没更新 wsl2 上面的一些包了，借这个机会更新下，还是常规的输入如下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
 
-<h2 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s</span><br><span class="line"> Running `target/debug/helloworld`</span><br><span class="line">[2024-06-26T01:29:31Z DEBUG helloworld] this is a debug message</span><br><span class="line">[2024-06-26T01:29:31Z DEBUG helloworld] rx: 4, [DE, AD, BE, EF]</span><br></pre></td></tr></table></figure>
+<p>果然，到第二步就报错了，如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925163833365-282955386.png"></p>
+<p>说明，还是 wget 的问题。</p>
+<p>检查了之前关于 <a target="_blank" rel="noopener" href="https://eastmonster.github.io/2022/10/05/clash-config-in-wsl/">wsl2 共享主机代理</a>的一些配置，都没有问题。</p>
+<p>这个关键的时候，眼睛扫了一眼 clash，MD，tun 模式没打开…</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925164147194-1775292874.png"></p>
+<h3 id="4-解决方法"><a href="#4-解决方法" class="headerlink" title="4. 解决方法"></a>4. 解决方法</h3><p>打开 clash 的 <a target="_blank" rel="noopener" href="https://blog.dejavu.moe/posts/cfw-tun/">tun 模式</a>后，就正常了。</p>
+
     </div>
 
     
@@ -263,7 +275,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://likko-liu.github.io/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/" title="rust终端输出debug信息">https://likko-liu.github.io/2024/06/26/rust终端输出debug信息/</a>
+    <a href="https://likko-liu.github.io/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/" title="WSL2 使用 code . 命令打开文件夹时，出现 &quot;Unable to establish SSL connection. ERROR: Failed to download...&quot;">https://likko-liu.github.io/2024/09/25/WSL2使用命令打开文件夹出错/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -280,12 +292,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/04/25/WSL2%E8%BF%9E%E6%8E%A5Windows%E7%9A%84USB%E8%AE%BE%E5%A4%87/" rel="prev" title="WSL2连接Windows的USB设备">
-      <i class="fa fa-chevron-left"></i> WSL2连接Windows的USB设备
+    <a href="/2024/08/24/rustlings%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8A%A5%E9%94%99/" rel="prev" title="rustlings v6.0 运行时出现 “ You are trying to run Rustlings using the old method before version 6”">
+      <i class="fa fa-chevron-left"></i> rustlings v6.0 运行时出现 “ You are trying to run Rustlings using the old method before version 6”
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/08/24/rustlings%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8A%A5%E9%94%99/" rel="next" title="rustlings v6.0 运行时出现 “ You are trying to run Rustlings using the old method before version 6”">
-      rustlings v6.0 运行时出现 “ You are trying to run Rustlings using the old method before version 6” <i class="fa fa-chevron-right"></i>
+    <a href="/2024/11/25/LIBRARY-MAX-SYSCALL-INTERRUPT-PRIORITY/" rel="next" title="FreeRTOS LIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 存在的意义以及高于它的中断不能调用 safe freertos api">
+      FreeRTOS LIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 存在的意义以及高于它的中断不能调用 safe freertos api <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -346,7 +358,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">配置方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">完整示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA"><span class="nav-number">3.</span> <span class="nav-text">输出</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">1. 背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">2. 分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BF%9B%E4%B8%80%E6%AD%A5%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">3. 进一步分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">4. 解决方法</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -461,7 +473,7 @@
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri === 'https://likko-liu.github.io/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/',]
+        ignores : [uri => uri.includes('#'),uri => uri === 'https://likko-liu.github.io/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/',]
       });
       });
   </script>

@@ -257,6 +257,118 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://likko-liu.github.io/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/20180320024651_FtmYW.jpeg">
+      <meta itemprop="name" content="likko liu">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="likko-liu's blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/" class="post-title-link" itemprop="url">WSL2 使用 code . 命令打开文件夹时，出现 "Unable to establish SSL connection. ERROR: Failed to download..."</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-09-25 16:31:58" itemprop="dateCreated datePublished" datetime="2024-09-25T16:31:58+08:00">2024-09-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-03-26 22:13:23" itemprop="dateModified" datetime="2026-03-26T22:13:23+08:00">2026-03-26</time>
+              </span>
+
+          
+            <span id="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/" class="post-meta-item leancloud_visitors" data-flag-title="WSL2 使用 code . 命令打开文件夹时，出现 "Unable to establish SSL connection. ERROR: Failed to download..."" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <span id="more"></span>
+<h3 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h3><p>在 wsl2 里开发一个小项目，之前一直使用功能正常。</p>
+<p>今天按以往的流程（打开 wsl2(ubuntu) 终端，进入到指定文件夹目录下，输入 <code>code .</code> 命令，在 vscode 中打开该文件夹），发现 vscode 需要更新，但是出现更新失败的情况，故无法在 vscode 中打开该文件夹，错误输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162256904-2062146745.png"></p>
+<h3 id="2-分析"><a href="#2-分析" class="headerlink" title="2. 分析"></a>2. 分析</h3><p>因为我一直使用 VPN 代理 wsl2，之前也都设置好了，但是发现在错误输出中有如下信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Connecting to 127.0.0.1:7890... connected.</span><br><span class="line">Unable to establish SSL connection.</span><br></pre></td></tr></table></figure>
+
+<p>显示能够正常挂上代理，但是 SSL 连接建立失败。我觉得先排查一下他是否真的正常挂上了主机的代理。</p>
+<p>ping 主机 IP，<code>ping 192.168.110.49</code> 输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162753461-180915758.png"></p>
+<p>ping 百度，<code>ping www.google.com</code> 输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925162822781-2141760377.png"></p>
+<p>最后，尝试连接 Google，<code>wget www.google.com</code> 输出如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925163006681-1543696888.png"></p>
+<p>综上，发现代理应该是没问题的。</p>
+<h3 id="3-进一步分析"><a href="#3-进一步分析" class="headerlink" title="3. 进一步分析"></a>3. 进一步分析</h3><p>离了个大谱，尝试直接把主机的 VPN 关掉，还是没有效果。</p>
+<p>此时想到，下载更新这个 linux 的 vscode 是要用到 wget 的，但前面测试 <code>wget google</code> 又没问题，那么就再试试其他动作使用 wget 有没有问题。</p>
+<p>刚好，很久没更新 wsl2 上面的一些包了，借这个机会更新下，还是常规的输入如下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure>
+
+<p>果然，到第二步就报错了，如下。</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925163833365-282955386.png"></p>
+<p>说明，还是 wget 的问题。</p>
+<p>检查了之前关于 <a target="_blank" rel="noopener" href="https://eastmonster.github.io/2022/10/05/clash-config-in-wsl/">wsl2 共享主机代理</a>的一些配置，都没有问题。</p>
+<p>这个关键的时候，眼睛扫了一眼 clash，MD，tun 模式没打开…</p>
+<p><img src="https://img2024.cnblogs.com/blog/3191003/202409/3191003-20240925164147194-1775292874.png"></p>
+<h3 id="4-解决方法"><a href="#4-解决方法" class="headerlink" title="4. 解决方法"></a>4. 解决方法</h3><p>打开 clash 的 <a target="_blank" rel="noopener" href="https://blog.dejavu.moe/posts/cfw-tun/">tun 模式</a>后，就正常了。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://likko-liu.github.io/2024/08/24/rustlings%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8A%A5%E9%94%99/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -971,7 +1083,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
