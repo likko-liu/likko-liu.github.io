@@ -21,12 +21,12 @@
     var CONFIG = {"hostname":"likko-liu.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="0. 前言在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。 1. Cmocka介绍Cmocka 是一个 C 单元测试框架，支持 mock objects（打桩）。它只需要标准的 C 库，可以在一系列计算平台（包括 embedded ）和不同的编译器上运行。 Cmocka 库提供：  Running Tests 是整个测试的运行函数 Standard Assert">
+  <meta name="description" content="0. 前言在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cmocka单元测试配置与使用">
 <meta property="og:url" content="https://likko-liu.github.io/2024/04/11/Cmocka%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="likko-liu&#39;s blog">
-<meta property="og:description" content="0. 前言在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。 1. Cmocka介绍Cmocka 是一个 C 单元测试框架，支持 mock objects（打桩）。它只需要标准的 C 库，可以在一系列计算平台（包括 embedded ）和不同的编译器上运行。 Cmocka 库提供：  Running Tests 是整个测试的运行函数 Standard Assert">
+<meta property="og:description" content="0. 前言在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_4d081329.png">
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412023607_image.png">
@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412054314_Screenshot%202024-04-11%20173337.png">
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412053956_Screenshot%202024-04-11%20173152.png">
 <meta property="article:published_time" content="2024-04-11T05:31:18.000Z">
-<meta property="article:modified_time" content="2025-04-26T15:22:35.636Z">
+<meta property="article:modified_time" content="2026-03-26T15:33:21.618Z">
 <meta property="article:author" content="likko liu">
 <meta property="article:tag" content="个人博客,Blog,likko-liu,嵌入式开发">
 <meta name="twitter:card" content="summary">
@@ -201,7 +201,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-26 23:22:35" itemprop="dateModified" datetime="2025-04-26T23:22:35+08:00">2025-04-26</time>
+                <time title="修改时间：2026-03-26 23:33:21" itemprop="dateModified" datetime="2026-03-26T23:33:21+08:00">2026-03-26</time>
               </span>
 
           
@@ -236,9 +236,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <span id="more"></span>
-<h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h2><p>在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。</p>
-<h2 id="1-Cmocka介绍"><a href="#1-Cmocka介绍" class="headerlink" title="1. Cmocka介绍"></a>1. Cmocka介绍</h2><p><a target="_blank" rel="noopener" href="https://cmocka.org/">Cmocka</a> 是一个 C 单元测试框架，支持 <strong>mock objects</strong>（打桩）。它只需要标准的 C 库，可以在一系列计算平台（包括 embedded ）和不同的编译器上运行。</p>
+        <h3 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h3><p>在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。</p>
+<span id="more"></span>
+
+<h3 id="1-Cmocka介绍"><a href="#1-Cmocka介绍" class="headerlink" title="1. Cmocka介绍"></a>1. Cmocka介绍</h3><p><a target="_blank" rel="noopener" href="https://cmocka.org/">Cmocka</a> 是一个 C 单元测试框架，支持 <strong>mock objects</strong>（打桩）。它只需要标准的 C 库，可以在一系列计算平台（包括 embedded ）和不同的编译器上运行。</p>
 <p>Cmocka 库提供：</p>
 <ul>
 <li>Running Tests 是整个测试的运行函数</li>
@@ -248,28 +249,28 @@
 <li>Dynamic Memory Allocation 用于对内存的检测</li>
 <li>Assert Macros 包含了常用的断言</li>
 </ul>
-<h2 id="2-GNU工具链安装"><a href="#2-GNU工具链安装" class="headerlink" title="2. GNU工具链安装"></a>2. GNU工具链安装</h2><blockquote>
+<h3 id="2-GNU工具链安装"><a href="#2-GNU工具链安装" class="headerlink" title="2. GNU工具链安装"></a>2. GNU工具链安装</h3><blockquote>
 <p>MSYS2（Minimal SYStem 2）是一个集成了大量的GNU工具链、工具和库的开源软件包集合。它提供了一个类似于Linux的shell环境，可以在Windows系统中编译和运行许多Linux应用程序和工具。    </p>
 <p>MSYS2基于MinGW-w64平台，提供了一个完整的开发环境，包括GCC编译器、GDB调试器、Make、Git版本控制系统和许多其他开发工具。除了常用的开发库和工具之外，MSYS2还提供了许多专门针对Windows平台的库和工具，方便开发人员进行跨平台开发和移植工作。    </p>
 <p>由于MSYS2拥有比较完整的Linux工具链和库，因此它成为了许多跨平台开发和移植项目的首选工具。另外，使用MSYS2也可以轻松地在Windows系统中搭建一个类似于Linux的软件开发环境，方便开发人员进行开发和调试工作。</p>
 </blockquote>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/B11050729/article/details/131719012">安装 MSYS2</a> 并安装后续编译所需的  <a target="_blank" rel="noopener" href="https://packages.msys2.org/package/mingw-w64-x86_64-gcc?repo=mingw64">GCC工具链</a> （我们希望后续使用 Mingw64 的子环境，故安装该子环境对应的 GCC 工具链），该工具链包含了 gcc编译器 、 gdb调试器 、 make 、git 等一系列所需的开发工具。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_4d081329.png"></p>
-<h2 id="3-Cmocka源码下载编译安装-直接安装"><a href="#3-Cmocka源码下载编译安装-直接安装" class="headerlink" title="3. Cmocka源码下载编译安装 &#x2F; 直接安装"></a>3. Cmocka源码下载编译安装 &#x2F; 直接安装</h2><p>源码下载编译 或 直接安装 都可配置 Cmocka，但目前在配置使用过程中，Windows 系统使用源码下载编译方法在单元测试过程中会存在找不到 Cmocka 库的问题，还得配置寻找 Cmocka 库。<br>故推荐在 Windows 系统下，使用直接安装的方法；在 Linux 环境下，源码下载编译 或 直接安装 均可。</p>
-<h3 id="3-1-Cmocka源码下载编译"><a href="#3-1-Cmocka源码下载编译" class="headerlink" title="3.1. Cmocka源码下载编译"></a>3.1. Cmocka源码下载编译</h3><p>访问 Cmocka 官方网站 <a target="_blank" rel="noopener" href="https://cmocka.org/">https://cmocka.org/</a> 下载源码。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412023607_image.png" alt="alt text"> </p>
+<h3 id="3-Cmocka源码下载编译安装-直接安装"><a href="#3-Cmocka源码下载编译安装-直接安装" class="headerlink" title="3. Cmocka源码下载编译安装 &#x2F; 直接安装"></a>3. Cmocka源码下载编译安装 &#x2F; 直接安装</h3><p>源码下载编译 或 直接安装 都可配置 Cmocka，但目前在配置使用过程中，Windows 系统使用源码下载编译方法在单元测试过程中会存在找不到 Cmocka 库的问题，还得配置寻找 Cmocka 库。<br>故推荐在 Windows 系统下，使用直接安装的方法；在 Linux 环境下，源码下载编译 或 直接安装 均可。</p>
+<h4 id="3-1-Cmocka源码下载编译"><a href="#3-1-Cmocka源码下载编译" class="headerlink" title="3.1. Cmocka源码下载编译"></a>3.1. Cmocka源码下载编译</h4><p>访问 Cmocka 官方网站 <a target="_blank" rel="noopener" href="https://cmocka.org/">https://cmocka.org/</a> 下载源码。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412023607_image.png" alt="alt text"> </p>
 <p>在 Linux 环境下，终端输入以下指令，对 Cmocka 源码进行解压、编译、安装。<em>具体参考：<a target="_blank" rel="noopener" href="https://qianchenzhumeng.github.io/posts/cmocka_tutorial/#2-%E5%AE%89%E8%A3%85-cmocka">https://qianchenzhumeng.github.io/posts/cmocka_tutorial&#x2F;</a></em></p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tar -xvJf cmocka-1.1.3.tar.xz</span><br><span class="line"><span class="built_in">cd</span> cmocka-1.1.3</span><br><span class="line"><span class="built_in">mkdir</span> build</span><br><span class="line">cmake -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ..</span><br><span class="line">make</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
 
 <p>在 Windows 环境下，终端输入以下指令，对 Cmocka 源码进行解压、编译、安装、并更新系统 <code>Path</code>（请注意默认的 CMocka 安装位置为：C:&#x2F;Program Files (x86)&#x2F; ）。<em>具体参考：<a target="_blank" rel="noopener" href="https://sam.hooke.me/note/2022/04/setting-up-cmocka/">https://sam.hooke.me/note/2022/04/setting-up-cmocka/</a></em></p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> cmocka</span><br><span class="line">cmake -S . -B build -G <span class="string">&quot;MinGW Makefiles&quot;</span> -DCMAKE_BUILD_TYPE=Debug</span><br><span class="line">cmake --build build</span><br><span class="line">cmake --install build</span><br></pre></td></tr></table></figure>
 
-<h3 id="3-2-Cmocka直接安装"><a href="#3-2-Cmocka直接安装" class="headerlink" title="3.2. Cmocka直接安装"></a>3.2. Cmocka直接安装</h3><p>MSYS2 官网直接提供了 Cmocka 安装包 <a target="_blank" rel="noopener" href="https://packages.msys2.org/base/mingw-w64-cmocka">https://packages.msys2.org/base/mingw-w64-cmocka</a>，根据我们选择的开发子系统 Mingw64 选择对应的安装包，在 Ming64 终端直接输入 <code>pacman -S mingw-w64-x86_64-cmocka</code> 即可完成安装。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412024129_image.png" alt="alt text"></p>
+<h4 id="3-2-Cmocka直接安装"><a href="#3-2-Cmocka直接安装" class="headerlink" title="3.2. Cmocka直接安装"></a>3.2. Cmocka直接安装</h4><p>MSYS2 官网直接提供了 Cmocka 安装包 <a target="_blank" rel="noopener" href="https://packages.msys2.org/base/mingw-w64-cmocka">https://packages.msys2.org/base/mingw-w64-cmocka</a>，根据我们选择的开发子系统 Mingw64 选择对应的安装包，在 Ming64 终端直接输入 <code>pacman -S mingw-w64-x86_64-cmocka</code> 即可完成安装。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412024129_image.png" alt="alt text"></p>
 <p>安装成功后，即可发现在 Mingw64 的 include 路径下已经包含了 Cmocka 的库文件。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412024856_image.png" alt="alt text"></p>
-<h2 id="4-Cmocka使用"><a href="#4-Cmocka使用" class="headerlink" title="4. Cmocka使用"></a>4. Cmocka使用</h2><p>先对 Cmocka 进行一个简单的测试使用，Cmocka 官方提供的源码中 <code>./example/</code> 路径下提供了几个测试用例。我选择了 <code>calculator</code> 进行测试使用。</p>
+<h3 id="4-Cmocka使用"><a href="#4-Cmocka使用" class="headerlink" title="4. Cmocka使用"></a>4. Cmocka使用</h3><p>先对 Cmocka 进行一个简单的测试使用，Cmocka 官方提供的源码中 <code>./example/</code> 路径下提供了几个测试用例。我选择了 <code>calculator</code> 进行测试使用。</p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">└── cmocka-1.1.3     </span><br><span class="line">    ├── AUTHORS     </span><br><span class="line">    ├── build   </span><br><span class="line">    ├── ChangeLog  </span><br><span class="line">    ├── cmake   </span><br><span class="line">    ├── CMakeLists.txt  </span><br><span class="line">    ├── cmocka.pc.cmake  </span><br><span class="line">    ├── cmocka-build-tree-settings.cmake.in  </span><br><span class="line">    ├── cmocka-config.cmake.in  </span><br><span class="line">    ├── CompilerChecks.cmake  </span><br><span class="line">    ├── config.h.cmake  </span><br><span class="line">    ├── ConfigureChecks.cmake  </span><br><span class="line">    ├── COPYING  </span><br><span class="line">    ├── coverity  </span><br><span class="line">    ├── CPackConfig.cmake  </span><br><span class="line">    ├── CTestConfig.cmake  </span><br><span class="line">    ├── DefineOptions.cmake  </span><br><span class="line">    ├── doc    </span><br><span class="line">    ├── example    </span><br><span class="line">    │   ├── allocate_module.c  </span><br><span class="line">    │   ├── allocate_module_test.c  </span><br><span class="line">    │   ├── assert_macro.c    </span><br><span class="line">    │   ├── assert_macro.h  </span><br><span class="line">    │   ├── assert_macro_test.c  </span><br><span class="line">    │   ├── assert_module.c  </span><br><span class="line">    │   ├── assert_module.h  </span><br><span class="line">    │   ├── assert_module_test.c  </span><br><span class="line">    │   ├── build    </span><br><span class="line">    │   ├── calculator.c  </span><br><span class="line">    │   ├── calculator.h  </span><br><span class="line">    │   ├── calculator_test.c  </span><br><span class="line">    │   ├── CMakeLists.txt  </span><br><span class="line">    │   ├── database.h  </span><br><span class="line">    │   ├── mock  </span><br><span class="line">    │   └── simple_test.c  </span><br><span class="line">    ├── include  </span><br><span class="line">    ├── INSTALL.md  </span><br><span class="line">    ├── NEWS  </span><br><span class="line">    ├── README.md  </span><br><span class="line">    ├── src  </span><br><span class="line">    └── tests  </span><br></pre></td></tr></table></figure>
 
 <p>使用 <code>cd example</code> 命令进入目录，修改部分 <code>calculator.c</code> 文件代码内容，使其支持进行单元测试后，执行 <code>gcc -o calculator calculator_test.c -lcmocka</code> 链接 cmocka 库进行编译，编译后生成 <code>calculator.exe</code> 文件，运行。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412032458_image.png" alt="alt text"></p>
 <p>最终运行结果为：进行了 22 条测试，通过 15 条测试，未通过 7 条测试。<br><img src="https://images.cnblogs.com/cnblogs_com/blogs/792762/galleries/2391207/o_240412032837_image.png" alt="alt text"></p>
-<h2 id="5-代码覆盖率"><a href="#5-代码覆盖率" class="headerlink" title="5. 代码覆盖率"></a>5. 代码覆盖率</h2><p>使用 <code>gcov</code> 和 <code>lcov</code> 查看代码覆盖率。<br>在 <code>./example/</code> 路径下创建 <code>code_coverage</code> 文件夹，<code>cd code_coverage</code> 进入该目录。 </p>
+<h3 id="5-代码覆盖率"><a href="#5-代码覆盖率" class="headerlink" title="5. 代码覆盖率"></a>5. 代码覆盖率</h3><p>使用 <code>gcov</code> 和 <code>lcov</code> 查看代码覆盖率。<br>在 <code>./example/</code> 路径下创建 <code>code_coverage</code> 文件夹，<code>cd code_coverage</code> 进入该目录。 </p>
 <figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">gcc -coverage -O0 -o calculator_test ../calculator_test.c -lcmocka</span><br><span class="line">gcov ../calculator_test.c -o .</span><br><span class="line"><span class="comment"># 使用 lcov 收集当前目录下的覆盖率数据，将结果储存在 calculator_test.info 中</span></span><br><span class="line">lcov -d . -t calculator -o calculator_test.info -b . -c</span><br><span class="line"><span class="comment"># 为 test_mocking.info 中的覆盖率数据生成 html 文档</span></span><br><span class="line">genhtml -o output calculator.info</span><br></pre></td></tr></table></figure>
 
 <blockquote>
@@ -376,7 +377,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">0. 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Cmocka%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">1. Cmocka介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-GNU%E5%B7%A5%E5%85%B7%E9%93%BE%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">2. GNU工具链安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Cmocka%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85-%E7%9B%B4%E6%8E%A5%E5%AE%89%E8%A3%85"><span class="nav-number">4.</span> <span class="nav-text">3. Cmocka源码下载编译安装 &#x2F; 直接安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-Cmocka%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91"><span class="nav-number">4.1.</span> <span class="nav-text">3.1. Cmocka源码下载编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Cmocka%E7%9B%B4%E6%8E%A5%E5%AE%89%E8%A3%85"><span class="nav-number">4.2.</span> <span class="nav-text">3.2. Cmocka直接安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Cmocka%E4%BD%BF%E7%94%A8"><span class="nav-number">5.</span> <span class="nav-text">4. Cmocka使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-number">6.</span> <span class="nav-text">5. 代码覆盖率</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-%E5%89%8D%E8%A8%80"><span class="nav-text">0. 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Cmocka%E4%BB%8B%E7%BB%8D"><span class="nav-text">1. Cmocka介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-GNU%E5%B7%A5%E5%85%B7%E9%93%BE%E5%AE%89%E8%A3%85"><span class="nav-text">2. GNU工具链安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Cmocka%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85-%E7%9B%B4%E6%8E%A5%E5%AE%89%E8%A3%85"><span class="nav-text">3. Cmocka源码下载编译安装 &#x2F; 直接安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-Cmocka%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91"><span class="nav-text">3.1. Cmocka源码下载编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Cmocka%E7%9B%B4%E6%8E%A5%E5%AE%89%E8%A3%85"><span class="nav-text">3.2. Cmocka直接安装</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Cmocka%E4%BD%BF%E7%94%A8"><span class="nav-text">4. Cmocka使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87"><span class="nav-text">5. 代码覆盖率</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -392,8 +393,8 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
-          <span class="site-state-item-name">日志</span>
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">blog</span>
         </a>
       </div>
   </nav>

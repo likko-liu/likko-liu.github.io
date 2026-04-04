@@ -1256,7 +1256,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #9affff;
+  background: #f10124;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2390,4 +2390,38 @@ embed {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* --- 1. 目录样式优化 --- */
+.sidebar-nav-overview,
+.site-overview-wrap {
+  display: none !important;
+}
+.sidebar-nav-toc {
+  width: 100% !important;
+  border-bottom: none !important;
+}
+.post-toc-wrap {
+  display: block !important;
+}
+/* --- 2. 核心控制逻辑 --- */
+/* 第一步：全局强制隐藏左下角按钮和侧边栏 */
+.sidebar-toggle,
+.sidebar {
+  display: none !important;
+}
+/* 第二步：只给带有 .post-toc 的文章详情页放行 */
+/* 只有真正生成的博客文章才会有 .post-toc */
+body:has(.post-toc) .sidebar-toggle,
+body:has(.post-toc) .sidebar {
+  display: block !important;
+}
+/* 第三步：针对“关于”页（.page）和“首页”（.index）进行强制二次屏蔽 */
+/* 即使页面里有标题，也不允许在这些页面显示按钮和侧边栏 */
+.index .sidebar-toggle,
+.index .sidebar,
+.archive .sidebar-toggle,
+.archive .sidebar,
+.page .sidebar-toggle,
+.page .sidebar {
+  display: none !important;
 }
