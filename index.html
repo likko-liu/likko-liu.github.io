@@ -20,7 +20,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"likko-liu.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"likko-liu.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta property="og:type" content="website">
@@ -115,17 +115,17 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section">首页</a>
 
   </li>
         <li class="menu-item menu-item-about">
 
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+    <a href="/about/" rel="section">关于</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a>
+    <a href="/archives/" rel="section">归档</a>
 
   </li>
   </ul>
@@ -224,11 +224,6 @@
       
           <p>使用 X-macro 替代函数指针，整合一个实例涉及的调用接口。</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/03/27/X-macro/">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -317,11 +312,6 @@
 <li>了解 GAP 以及 GATT&#x2F;ATT 层的功能。</li>
 </ul>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/03/27/BLE%E5%AD%A6%E4%B9%A0%E4%B8%8E%E6%A2%B3%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -414,11 +404,6 @@
 <p><img src="https://img2024.cnblogs.com/blog/3191003/202411/3191003-20241125110055609-285585429.png"></p>
 <p>那么现在假如我们正在执行任务1或任务2，此时中断5触发，在回调中会执行它需要做的，包含调用 <code>safe freertos api</code>，并在执行过程中会进入临界段屏蔽所有低于它优先级的中断和任务（现在先不考虑 FreeRTOS 中的 <code>MAX_SYSCALL_INTERRPUT_PRIORITY</code> 机制，也就是它不会屏蔽中断1~4）。</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/11/25/LIBRARY-MAX-SYSCALL-INTERRUPT-PRIORITY/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -508,11 +493,6 @@
           <h3 id="0-背景"><a href="#0-背景" class="headerlink" title="0. 背景"></a>0. 背景</h3><p>在 wsl2 里开发一个小项目，之前一直使用功能正常。</p>
 <p>今天按以往的流程（打开 wsl2(ubuntu) 终端，进入到指定文件夹目录下，输入 <code>code .</code> 命令，在 vscode 中打开该文件夹），发现 vscode 需要更新，但是出现更新失败的情况，故无法在 vscode 中打开该文件夹，错误输出如下。</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/09/25/WSL2%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E5%A4%B9%E5%87%BA%E9%94%99/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -601,11 +581,6 @@
       
           <h3 id="0-背景"><a href="#0-背景" class="headerlink" title="0. 背景"></a>0. 背景</h3><p>在之前学习 rust 时，使用过一段时间 rustlings 感觉还不错，但是之前的学习只把 rustlings 的题目刷了一半，然后想再从头到尾刷一遍 rustlings 的题目。<br>在 rustlings 的 README.md 文档中也没有找到重置 rustlings 的方法，而且官方的分支也更新到了 v6.2.0（我之前使用的似乎是 v5.x 版本的）。索性直接把整个文件夹删掉，再重新搞一遍，顺便也可以试试 v6.2.0 有啥不一样，一石二鸟。<br>然后，按之前的记忆安装 rustlings（就是没细看现在的 README.md 文档，因为之前的安装记忆犹新…）。然后就是一半是按记忆里的，一半是那个 README.md 文档里的，具体就是：</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/08/24/rustlings%E8%BF%90%E8%A1%8C%E6%97%B6%E6%8A%A5%E9%94%99/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -696,11 +671,6 @@
 <li>将 <code>env_logger</code> <code>log</code> 添加到 Cargo.toml ：<br>打开 Cargo.toml 文件并在 [dependencies] 部分下添加 <code>env_logger</code> <code>log</code> 。</li>
 </ul>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/06/26/rust%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BAdebug%E4%BF%A1%E6%81%AF/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -789,11 +759,6 @@
       
           <h3 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h3><p>最近使用 Linux 通过串口与设备通信，之前使用 Linux 都是在 VMware 里创建虚拟机，该平台下若有串口通信需求，有专门的按键功能切换很方便。<br>但切换了 WSL2 （windows 的 linux 子系统，配置很方便）后，因为是纯命令行操作，就带来了点串口通信的麻烦。<br>目前 WSL2 官方没有提供相应的命令行来设置串口通信（WSL1 支持）。但总有大佬出来解决问题，所谓大佬栽树，我乘凉。</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/25/WSL2%E8%BF%9E%E6%8E%A5Windows%E7%9A%84USB%E8%AE%BE%E5%A4%87/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -882,11 +847,6 @@
       
           <h3 id="0-前言"><a href="#0-前言" class="headerlink" title="0. 前言"></a>0. 前言</h3><p>在 Windows 环境下配置 Cmocka 单元测试，并使用该框架进行单元测试。</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/04/11/Cmocka%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -976,11 +936,6 @@
           <h3 id="0-背景"><a href="#0-背景" class="headerlink" title="0. 背景"></a>0. 背景</h3><p>一直以来，学习了 <strong>stm32</strong> 和 <strong>freertos</strong> 但在思考 <code>RTOS</code> 的任务调度时，涉及到 stm32 的中断相关的 <code>PendSV</code> 就感觉糊里糊涂。本篇记录刨析 stm32 的中断系统。 </p>
 <p>本文的讨论重点是最后一部分内容 <code>【SVC 和 PendSV】</code>。</p>
           <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/03/03/STM32%E7%9A%84%E4%B8%AD%E6%96%AD%E5%88%A8%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
           <!--/noindex-->
         
       
@@ -1073,10 +1028,10 @@
 </div>
   <div class="links-of-author motion-element">
       <span class="links-of-author-item">
-        <a href="https://github.com/likko-liu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;likko-liu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+        <a href="https://github.com/likko-liu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;likko-liu" rel="noopener" target="_blank">GitHub</a>
       </span>
       <span class="links-of-author-item">
-        <a href="/kikkoliu69@gmail.com" title="E-Mail → kikkoliu69@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+        <a href="/kikkoliu69@gmail.com" title="E-Mail → kikkoliu69@gmail.com">E-Mail</a>
       </span>
   </div>
 
